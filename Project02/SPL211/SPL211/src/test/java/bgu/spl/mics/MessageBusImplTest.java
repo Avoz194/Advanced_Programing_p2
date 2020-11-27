@@ -32,17 +32,22 @@ class MessageBusImplTest {
         mb.unregister(ms2);
     }
 
-    /*Test Case (Test sendEvent and awaitMessage):
+    /*Test Case (Test sendEvent and awaitMessage - same flow):
      *Assuming ms1 and ms2 are registered.
      * Subscribe ms1 to AttackEvents with empty callback, and ms2 to send an event
      * ms1 pulls the message from Q
+     * Make sure the event was inserted to ms1's Q and not to ms3's
      */
     @Test
     public void testSendEvent() throws InterruptedException {
         AttackEvent e1 = new AttackEvent();
+        HanSoloMicroservice ms3 = new HanSoloMicroservice();
+        mb.register(ms3);
         mb.subscribeEvent(AttackEvent.class, ms1);
         ms2.sendEvent(e1);
         assertTrue(e1.equals(mb.awaitMessage(ms1)));
+        assertFalse(e1.equals(mb.awaitMessage(ms3)));
+
     }
 
     /* Identical Test Case to the above, this time for sendBroadcast()
@@ -51,8 +56,14 @@ class MessageBusImplTest {
     public void testSendBroadcast() throws InterruptedException {
         VictoryBroadcast b1 = new VictoryBroadcast();
         mb.subscribeBroadcast(VictoryBroadcast.class, ms1);
+        HanSoloMicroservice ms3 = new HanSoloMicroservice();
+        mb.register(ms3);
+        mb.subscribeBroadcast(VictoryBroadcast.class, ms3);
         ms2.sendBroadcast(b1);
         assertTrue(b1.equals(mb.awaitMessage(ms1)));
+        assertTrue(b1.equals(mb.awaitMessage(ms3)));
+        assertFalse(b1.equals(mb.awaitMessage(ms2)));
+
     }
 
     /*TestCase:
