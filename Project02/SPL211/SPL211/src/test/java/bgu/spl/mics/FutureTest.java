@@ -19,10 +19,15 @@ public class FutureTest {
      *Resolve the future, test get to make sure equals to the result we've inserted.
      */
     @Test
-    public void testGet()
+    public void testGet() throws InterruptedException
     {
         assertFalse(future.isDone());
-        assertNull(future.get()); //TODO:maybe try -catch?
+        try{
+            assertNotNull(future.get()); //TODO:maybe try -catch?
+            fail();
+        } catch (InterruptedException inter){
+            Thread.currentThread().interrupt();
+        }
         String str = "someResult";
         future.resolve(str);
         assertTrue(str.equals(future.get()));

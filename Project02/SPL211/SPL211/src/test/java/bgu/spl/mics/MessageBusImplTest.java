@@ -34,8 +34,7 @@ class MessageBusImplTest {
 
     /*Test Case (Test sendEvent and awaitMessage - same flow):
      *Assuming ms1 and ms2 are registered.
-     * Subscribe ms1 to AttackEvents with empty callback, and ms2 to send an event
-     * ms1 pulls the message from Q
+     * Subscribe ms1 to AttackEvents with empty callback, and ms2 to send an event of this type.
      * Make sure the event was inserted to ms1's Q and not to ms3's
      */
     @Test
@@ -46,7 +45,12 @@ class MessageBusImplTest {
         mb.subscribeEvent(AttackEvent.class, ms1);
         ms2.sendEvent(e1);
         assertTrue(e1.equals(mb.awaitMessage(ms1)));
-        assertFalse(e1.equals(mb.awaitMessage(ms3)));
+        try{
+            assertFalse(e1.equals(mb.awaitMessage(ms3))); //TODO: is there an exception here?
+            fail();
+        }catch (InterruptedException inter){
+            Thread.currentThread().interrupt();
+        }
 
     }
 
@@ -62,8 +66,12 @@ class MessageBusImplTest {
         ms2.sendBroadcast(b1);
         assertTrue(b1.equals(mb.awaitMessage(ms1)));
         assertTrue(b1.equals(mb.awaitMessage(ms3)));
-        assertFalse(b1.equals(mb.awaitMessage(ms2)));
-
+        try{
+            assertFalse(b1.equals(mb.awaitMessage(ms2))); //TODO: is there an exception here?
+            fail();
+        } catch (InterruptedException inter){
+            Thread.currentThread().interrupt();
+        }
     }
 
     /*TestCase:
