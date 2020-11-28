@@ -45,10 +45,10 @@ class MessageBusImplTest {
         mb.subscribeEvent(AttackEvent.class, ms1);
         ms2.sendEvent(e1);
         assertTrue(e1.equals(mb.awaitMessage(ms1)));
-        try{
+        try {
             assertFalse(e1.equals(mb.awaitMessage(ms3))); //TODO: is there an exception here?
             fail();
-        }catch (InterruptedException inter){
+        } catch (InterruptedException inter) {
             Thread.currentThread().interrupt();
         }
 
@@ -66,10 +66,10 @@ class MessageBusImplTest {
         ms2.sendBroadcast(b1);
         assertTrue(b1.equals(mb.awaitMessage(ms1)));
         assertTrue(b1.equals(mb.awaitMessage(ms3)));
-        try{
+        try {
             assertFalse(b1.equals(mb.awaitMessage(ms2))); //TODO: is there an exception here?
             fail();
-        } catch (InterruptedException inter){
+        } catch (InterruptedException inter) {
             Thread.currentThread().interrupt();
         }
     }
@@ -79,12 +79,16 @@ class MessageBusImplTest {
      * Complete event e1.
      */
     @Test
-    public void testComplete() {
+    public void testComplete()  throws InterruptedException {
         AttackEvent e1 = new AttackEvent();
         mb.subscribeEvent(AttackEvent.class, ms1);
         Future f1 = mb.sendEvent(e1);
         assertFalse(f1.isDone());
-        mb.complete(e1, true);
+        try { //TODO: Do we need it?
+            mb.complete((AttackEvent)(mb.awaitMessage(ms1)), true);
+        } catch (InterruptedException inter) {
+            fail();
+        }
         assertTrue(f1.isDone());
         assertEquals(true, f1.get());
     }
