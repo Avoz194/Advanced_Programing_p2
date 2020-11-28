@@ -1,9 +1,7 @@
 package bgu.spl.mics;
 
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.VictoryBroadcast;
-import bgu.spl.mics.application.services.C3POMicroservice;
-import bgu.spl.mics.application.services.HanSoloMicroservice;
+import bgu.spl.mics.application.messages.*;
+import bgu.spl.mics.application.services.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,7 @@ class MessageBusImplTest {
     private MessageBusImpl mb;
     private MicroService ms1;
     private MicroService ms2;
-
+    private MicroService ms3;
 
     @BeforeEach
     public void SetUp() {
@@ -24,12 +22,15 @@ class MessageBusImplTest {
         mb.register(ms1);
         ms2 = new C3POMicroservice();
         mb.register(ms2);
+        ms3 = new C3POMicroservice();
+        mb.register(ms3);
     }
 
     @AfterEach
     public void tearDown() {
         mb.unregister(ms1);
         mb.unregister(ms2);
+        mb.unregister(ms3);
     }
 
     /*Test Case (Test sendEvent and awaitMessage - same flow):
@@ -40,34 +41,42 @@ class MessageBusImplTest {
     @Test
     public void testSendEvent() throws InterruptedException {
         AttackEvent e1 = new AttackEvent();
-        HanSoloMicroservice ms3 = new HanSoloMicroservice();
-        mb.register(ms3);
         mb.subscribeEvent(AttackEvent.class, ms1);
         ms2.sendEvent(e1);
-        assertTrue(e1.equals(mb.awaitMessage(ms1)));
+        try{
+            assertTrue(e1.equals(mb.awaitMessage(ms1)));
+        } catch (InterruptedException inter) {
+            Thread.currentThread().interrupt();
+            fail();
+        }
+        //Test case with no message for ms3. awaitMessage is blocking, we expect it to be interrupted
         try {
-            assertFalse(e1.equals(mb.awaitMessage(ms3))); //TODO: is there an exception here?
+            assertFalse(e1.equals(mb.awaitMessage(ms3)));
             fail();
         } catch (InterruptedException inter) {
             Thread.currentThread().interrupt();
         }
-
     }
 
-    /* Identical Test Case to the above, this time for sendBroadcast()
+    /* Identical Test Case to the above, this time for sendBroadcast().
+     * Tests to microservices subscribed to the same broadcast. ms1 and ms3 to receive the message.
      */
     @Test
     public void testSendBroadcast() throws InterruptedException {
         VictoryBroadcast b1 = new VictoryBroadcast();
         mb.subscribeBroadcast(VictoryBroadcast.class, ms1);
-        HanSoloMicroservice ms3 = new HanSoloMicroservice();
-        mb.register(ms3);
         mb.subscribeBroadcast(VictoryBroadcast.class, ms3);
         ms2.sendBroadcast(b1);
-        assertTrue(b1.equals(mb.awaitMessage(ms1)));
-        assertTrue(b1.equals(mb.awaitMessage(ms3)));
         try {
-            assertFalse(b1.equals(mb.awaitMessage(ms2))); //TODO: is there an exception here?
+            assertTrue(b1.equals(mb.awaitMessage(ms1)));
+            assertTrue(b1.equals(mb.awaitMessage(ms3)));
+        }catch (InterruptedException inter){
+            Thread.currentThread().interrupt();
+            fail();
+        }
+        //Test case with no message for ms2. awaitMessage is blocking, we expect it to be interrupted
+        try {
+            assertFalse(b1.equals(mb.awaitMessage(ms2)));
             fail();
         } catch (InterruptedException inter) {
             Thread.currentThread().interrupt();
@@ -84,9 +93,10 @@ class MessageBusImplTest {
         mb.subscribeEvent(AttackEvent.class, ms1);
         Future f1 = mb.sendEvent(e1);
         assertFalse(f1.isDone());
-        try { //TODO: Do we need it?
+        try {
             mb.complete((AttackEvent)(mb.awaitMessage(ms1)), true);
         } catch (InterruptedException inter) {
+            Thread.currentThread().interrupt();
             fail();
         }
         assertTrue(f1.isDone());

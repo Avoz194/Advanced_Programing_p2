@@ -1,9 +1,8 @@
-package bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics;
 
+import bgu.spl.mics.application.passiveObjects.Ewok;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class EwokTest {
@@ -13,10 +12,6 @@ class EwokTest {
     public void setUp() throws Exception {
         ewok = new Ewok(1);
     }
-    /*Test flow:
-    *
-    * *
-    */
 
     @Test
     public void testGetAvailable() {
