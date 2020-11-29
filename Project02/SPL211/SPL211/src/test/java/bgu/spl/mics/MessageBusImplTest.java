@@ -46,7 +46,6 @@ class MessageBusImplTest {
         try{
             assertTrue(e1.equals(mb.awaitMessage(ms1)));
         } catch (InterruptedException inter) {
-            Thread.currentThread().interrupt();
             fail();
         }
         //Test case with no message for ms3. awaitMessage is blocking, we expect it to be interrupted
@@ -54,7 +53,6 @@ class MessageBusImplTest {
             assertFalse(e1.equals(mb.awaitMessage(ms3)));
             fail();
         } catch (InterruptedException inter) {
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -71,7 +69,6 @@ class MessageBusImplTest {
             assertTrue(b1.equals(mb.awaitMessage(ms1)));
             assertTrue(b1.equals(mb.awaitMessage(ms3)));
         }catch (InterruptedException inter){
-            Thread.currentThread().interrupt();
             fail();
         }
         //Test case with no message for ms2. awaitMessage is blocking, we expect it to be interrupted
@@ -79,7 +76,6 @@ class MessageBusImplTest {
             assertFalse(b1.equals(mb.awaitMessage(ms2)));
             fail();
         } catch (InterruptedException inter) {
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -96,7 +92,6 @@ class MessageBusImplTest {
         try {
             mb.complete((AttackEvent)(mb.awaitMessage(ms1)), true);
         } catch (InterruptedException inter) {
-            Thread.currentThread().interrupt();
             fail();
         }
         assertTrue(f1.isDone());
