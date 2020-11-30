@@ -33,23 +33,24 @@ public class Ewoks {
         return instance;
     }
 
-    public void acquire(int ewok) {
-        Ewok e = new Ewok(ewok);
-        if (!(e.getAvailable()) || ewokVector.contains(e)) { //TODO: Replace with Sync
-            throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
-        } else {
-            ewokVector.insertElementAt(e, ewok);
-            e.acquire();
+    public void acquire(int [] ewoks) {
+//        if (!(e.getAvailable()) || ewokVector.contains(e)) { //TODO: Replace with Sync
+//            throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
+//        }
+        for (int i = 0;i<ewoks.length; i++){
+            ewokVector.elementAt(ewoks[i]).acquire();
         }
+
+
     }
 
-    public void release(int ewok) {
-        Ewok e = new Ewok(ewok);
-        if ((e.getAvailable()) || !(ewokVector.contains(e))) {
-            throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
-        } else {
-            ewokVector.remove(ewok);
-            e.release();
+    public void release(int [] ewoks) {
+//        if ((e.getAvailable()) || !(ewokVector.contains(e))) { //TODO: Replace with Sync
+//            throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
+
+        for (int i = 0;i<ewoks.length; i++){
+            ewokVector.elementAt(ewoks[i]).release();
         }
+
     }
 }
