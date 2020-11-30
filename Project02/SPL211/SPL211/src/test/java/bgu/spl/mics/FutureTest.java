@@ -21,11 +21,14 @@ public class FutureTest {
      *Resolve the future, test get to make sure equals to the result we've inserted.
      */
     @Test
-    public void testGet() {
+    public void testGet() throws InterruptedException{
         assertFalse(future.isDone());
         String str = "someResult";
         future.resolve(str);
-        assertTrue(str.equals((future.get())));
+        try{
+            assertTrue(str.equals((future.get())));
+        }
+        catch (InterruptedException e){}
     }
 
     /*Test flow:
@@ -38,7 +41,10 @@ public class FutureTest {
         String str = "someResult";
         future.resolve(str);
         assertTrue(future.isDone());
-        assertTrue(str.equals(future.get()));
+        try{
+            assertTrue(str.equals((future.get())));
+        }
+        catch (InterruptedException e){}
     }
 
     /*Test flow:
@@ -60,9 +66,15 @@ public class FutureTest {
     public void testGetWithTimeOut() throws InterruptedException {
         {
             assertFalse(future.isDone());
-            assertNull(future.get(100, TimeUnit.MILLISECONDS));
+            try{
+                assertNull(future.get(100, TimeUnit.MILLISECONDS));
+            }
+            catch (InterruptedException e){}
             future.resolve("foo");
-            assertEquals("foo", future.get(100, TimeUnit.MILLISECONDS));
+            try{
+                assertEquals("foo", future.get(100, TimeUnit.MILLISECONDS));
+            }
+            catch (InterruptedException e){}
         }
     }
 }
