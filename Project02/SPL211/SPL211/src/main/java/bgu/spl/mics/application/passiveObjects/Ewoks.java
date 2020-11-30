@@ -16,20 +16,26 @@ public class Ewoks {
     private static Ewoks instance = null; //  ewok is a singleton
 
     // private constructor
-    private Ewoks() {
-        this.ewokVector = new Vector<Ewok>(1); // vector of ewoks
+    private Ewoks(int numOfEwoks) {
+        this.ewokVector = new Vector<Ewok>(numOfEwoks); // vector of ewoks
     }
 
+    public static Ewoks getInstance(int numOfEwoks) { // singleton instance checker  //TODO: make sure structure of Singelton is Correct
+        if (instance == null) {
+            instance = new Ewoks(numOfEwoks);
+        }
+        return instance;
+    }
     public static Ewoks getInstance() { // singleton instance checker
         if (instance == null) {
-            instance = new Ewoks();
+            throw new NoSuchElementException("Ewoks should be initizalized first with the numOfEwoks in the program");
         }
         return instance;
     }
 
     public void acquire(int ewok) {
         Ewok e = new Ewok(ewok);
-        if (!(e.getAvailable()) || ewokVector.contains(e)) {
+        if (!(e.getAvailable()) || ewokVector.contains(e)) { //TODO: Replace with Sync
             throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
         } else {
             ewokVector.insertElementAt(e, ewok);
