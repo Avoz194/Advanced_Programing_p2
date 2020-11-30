@@ -12,7 +12,7 @@ public class Ewok {
 
     public Ewok(int serialNumber) {
         if (serialNumber < 0) {
-            throw new IllegalArgumentException("index of ewok must be positive int");
+            throw new IllegalArgumentException("index of ewok must be non-negative int");
         }
         this.serialNumber = serialNumber;
         this.available = true;
@@ -22,16 +22,11 @@ public class Ewok {
         return available;
     }
 
-    public int getSerialNumber() { //TODO: check if its needed
-        return serialNumber;
-    }
-
-
     /**
      * Acquires an Ewok
      */
     public void acquire() {
-        if (!available) {
+        if (!available) { //TODO: change to sync
             throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
         } else {
             this.available = true;
