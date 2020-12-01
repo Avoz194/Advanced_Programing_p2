@@ -29,15 +29,15 @@ public class MessageBusImpl implements MessageBus {
 
     /**
      * Subscribes microService {@code m} to broadcast/Event message of type {@code type}.
-     *
+     * <p>
      * 1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
      * 2. Add the microService {@code m} to the relevant q in the hashMap.
      *
      * <p>
      *
-     * @param type     The {@link Class} representing the type of Message
-     *                 to subscribe to.
-     * @param m        The microService to register to this type of Message.
+     * @param type The {@link Class} representing the type of Message
+     *             to subscribe to.
+     * @param m    The microService to register to this type of Message.
      */
     private void addToMsPerMessageQ(Class<? extends Message> type, MicroService m) { //TODO: figure out whether to sync
         if (!msPerMessageQ.containsKey(type))
@@ -48,14 +48,14 @@ public class MessageBusImpl implements MessageBus {
     /**
      * Subscribes microService {@code m} to Event message of type {@code type}.
      * Use the private method @addToMsPerMessageQ, which:
-     *      1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
-     *      2. Add the microService {@code m} to the relevant q in the hashMap.
+     * 1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
+     * 2. Add the microService {@code m} to the relevant q in the hashMap.
      *
      * <p>
      *
-     * @param type     The {@link Class} representing the type of Event
-     *                 to subscribe to.
-     * @param m        The microService to register to this type of Event.
+     * @param type The {@link Class} representing the type of Event
+     *             to subscribe to.
+     * @param m    The microService to register to this type of Event.
      */
     //Use private function addToMsPerMessageQ.
     public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
@@ -65,14 +65,14 @@ public class MessageBusImpl implements MessageBus {
     /**
      * Subscribes microService {@code m} to Broadcast message of type {@code type}.
      * Use the private method @addToMsPerMessageQ, which:
-     *      1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
-     *      2. Add the microService {@code m} to the relevant q in the hashMap.
+     * 1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
+     * 2. Add the microService {@code m} to the relevant q in the hashMap.
      *
      * <p>
      *
-     * @param type     The {@link Class} representing the type of Broadcast
-     *                 to subscribe to.
-     * @param m        The microService to register to this type of Broadcast.
+     * @param type The {@link Class} representing the type of Broadcast
+     *             to subscribe to.
+     * @param m    The microService to register to this type of Broadcast.
      */
     //Use private function addToMsPerMessageQ.
     public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
@@ -94,11 +94,16 @@ public class MessageBusImpl implements MessageBus {
      *               {@code e}.
      */
     public <T> void complete(Event<T> e, T result) {
-        Future<T> f = futurePerEvent.get(e);
-        if(f.isDone())
-            throw new RuntimeException("Can't resolve an already resolved future");
-        else
-            f.resolve(result); //TODO:Resolve should be synced
+        if (!futurePerEvent.containsKey(e)) {
+            throw new RuntimeException("Every Event should first be sent and matched to a Future object");
+        } else {
+            Future<T> f = futurePerEvent.get(e);
+
+            if (f.isDone())
+                throw new RuntimeException("Can't resolve an already resolved future");
+            else
+                f.resolve(result); //TODO:Resolve should be synced
+        }
     }
 
     @Override
