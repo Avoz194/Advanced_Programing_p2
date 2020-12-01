@@ -29,10 +29,12 @@ public abstract class MicroService implements Runnable {
      */
     private HashMap<Class<? extends Message>, Callback> eventCallbacks;
     private HashMap<Event, Future> eventsToFollow; //TODO: Make sure needs to be concurrent
+    private String msName;
 
     public MicroService(String name) {
         eventCallbacks = new HashMap<>();
         eventsToFollow = new HashMap<>();
+        msName = name;
     }
 
     /**
@@ -110,8 +112,9 @@ public abstract class MicroService implements Runnable {
      * null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-
-        return null;
+        Future<T> f = eventsToFollow.get(e);
+        MessageBusImpl.getInstance().sendEvent(e);
+        return f;
     }
 
     /**
@@ -122,7 +125,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-
+        MessageBusImpl.getInstance().sendBroadcast(b);
     }
 
     /**
@@ -158,7 +161,7 @@ public abstract class MicroService implements Runnable {
      * construction time and is used mainly for debugging purposes.
      */
     public final String getName() {
-        return null;
+        return this.msName;
     }
 
     /**
