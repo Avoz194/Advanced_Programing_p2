@@ -111,10 +111,10 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-   private void addToMessageQsPerMs(Class<? extends Message> type) { //TODO: figure out whether to sync
+    private void addToMessageQsPerMs(Class<? extends Message> type) { //TODO: figure out whether to sync
         ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(type);
         if(mss.size()!=1){
-            //TODO:ROUND ROBIN
+            robin_matter(mss);
         }else{
             for (MicroService m : mss) {
                 if(!messageQs.get(m).contains(type)){
@@ -124,20 +124,25 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-
-
+    private void robin_matter(ConcurrentLinkedQueue<MicroService> mss) {
+        while(!mss.isEmpty()){
+            //TODO: how to get attack num?
+        }
+    }
 
     @Override
     public void sendBroadcast(Broadcast b) {
-        addToMessageQsPerMs(b); //TODO: figure it out
+        Class<? extends Message> type = new Class<? extends Message>  (b);
+        addToMessageQsPerMs(type); //TODO: figure it out
 
     }
 
 
     @Override
     public <T> Future<T> sendEvent(Event<T> e) {
-        Future<T> f = futurePerEvent.get(e);
-        addToMessageQsPerMs(e); //TODO: figure it out
+        Class<? extends Message> type = new Class<? extends Message>  (e);
+        Future<T> f = futurePerEvent.get(type);
+        addToMessageQsPerMs(type); //TODO: figure it out
         return f;
     }
 
