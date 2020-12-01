@@ -2,6 +2,7 @@ package bgu.spl.mics;
 
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -14,12 +15,16 @@ public class MessageBusImpl implements MessageBus {
     private static MessageBusImpl instance = null;
     private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
     private static HashMap<Event, Future> futurePerEvent; //TODO: Make sure if needs to be concurrent
+    private static ConcurrentHashMap<MicroService,ConcurrentLinkedQueue< Class<? extends Message>>> messageQs; //TODO: true?
+
+
 
     private MessageBusImpl() {
         msPerMessageQ = new ConcurrentHashMap<>();
         futurePerEvent = new HashMap<>();
+        messageQs = new ConcurrentHashMap<>();
     }
-
+    
     public static MessageBusImpl getInstance() {
         if (instance == null) { //TODO: sync
             instance = new MessageBusImpl();
@@ -106,16 +111,28 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
+    private void addToMessageQsPerMs(Class<? extends Message> type) { //TODO: figure out whether to sync
+        Set<Class<? extends Message>>  s = msPerMessageQ.keySet();
+        for (Class<? extends Message> m: s) {
+            if (!msPerMessageQ.containsValue(type)) {
+                messageQs.get(m).add(type);
+            }
+        }
+    }
+
+
     @Override
     public void sendBroadcast(Broadcast b) {
+        addToMessageQsPerMs(b); //TODO: figure it out
 
     }
 
 
     @Override
     public <T> Future<T> sendEvent(Event<T> e) {
-
-        return null;
+        Future<T> f = futurePerEvent.get(e);
+        addToMessageQsPerMs(e); //TODO: figure it out
+        return f;
     }
 
     @Override
