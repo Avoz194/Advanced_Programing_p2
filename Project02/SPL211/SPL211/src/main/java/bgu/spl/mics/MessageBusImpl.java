@@ -13,11 +13,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MessageBusImpl implements MessageBus {
     private static MessageBusImpl instance = null;
     private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
-    private static HashMap<Event, Future> eventToFuture; //TODO: Make sure if needs to be concurrent
+    private static HashMap<Event, Future> futurePerEvent; //TODO: Make sure if needs to be concurrent
 
     private MessageBusImpl() {
         msPerMessageQ = new ConcurrentHashMap<>();
-        eventToFuture = new HashMap<>();
+        futurePerEvent = new HashMap<>();
     }
 
     public static MessageBusImpl getInstance() {
@@ -83,7 +83,7 @@ public class MessageBusImpl implements MessageBus {
     /**
      * Completes the received request {@code e} with the result {@code result}
      * using Future's resolve.
-     * Look for the matching future for this event using eventToFuture HashMap.
+     * Look for the matching future for this event using futurePerEvent HashMap.
      *
      * <p>
      *
@@ -94,7 +94,7 @@ public class MessageBusImpl implements MessageBus {
      *               {@code e}.
      */
     public <T> void complete(Event<T> e, T result) {
-        Future<T> f = eventToFuture.get(e);
+        Future<T> f = futurePerEvent.get(e);
         if(f.isDone())
             throw new RuntimeException("Can't resolve an already resolved future");
         else
