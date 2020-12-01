@@ -28,9 +28,11 @@ public abstract class MicroService implements Runnable {
      * does not have to be unique)
      */
     private HashMap<Class<? extends Message>, Callback> eventCallbacks;
+    private HashMap<Event, Future> eventToFuture; //TODO: Make sure needs to be concurrent
 
     public MicroService(String name) {
         eventCallbacks = new HashMap<>();
+        eventToFuture = new HashMap<>();
     }
 
     /**

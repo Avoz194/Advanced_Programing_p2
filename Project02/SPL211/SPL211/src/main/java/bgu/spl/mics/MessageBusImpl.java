@@ -13,13 +13,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MessageBusImpl implements MessageBus {
     private static MessageBusImpl instance = null;
     private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
+    private static HashMap<Event, Future> eventToFuture; //TODO: Make sure needs to be concurrent
 
     private MessageBusImpl() {
         msPerMessageQ = new ConcurrentHashMap<>();
+        eventToFuture = new HashMap<>();
     }
 
     public static MessageBusImpl getInstance() {
-        if (instance == null) {
+        if (instance == null) { //TODO: sync
             instance = new MessageBusImpl();
         }
         return instance;
