@@ -111,14 +111,20 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    private void addToMessageQsPerMs(Class<? extends Message> type) { //TODO: figure out whether to sync
-        Set<Class<? extends Message>>  s = msPerMessageQ.keySet();
-        for (Class<? extends Message> m: s) {
-            if (!msPerMessageQ.containsValue(type)) {
-                messageQs.get(m).add(type);
+   private void addToMessageQsPerMs(Class<? extends Message> type) { //TODO: figure out whether to sync
+        ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(type);
+        if(mss.size()!=1){
+            //TODO:ROUND ROBIN
+        }else{
+            for (MicroService m : mss) {
+                if(!messageQs.get(m).contains(type)){
+                    messageQs.get(m).add(type);
+                }
             }
         }
     }
+
+
 
 
     @Override
