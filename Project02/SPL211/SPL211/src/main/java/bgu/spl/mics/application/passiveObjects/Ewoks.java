@@ -18,11 +18,14 @@ public class Ewoks {
     // private constructor
     private Ewoks(int numOfEwoks) {
         this.ewokVector = new Vector<Ewok>(numOfEwoks); // vector of ewoks
+        for (int i=0;i<numOfEwoks;i++){
+            ewokVector.set(i,new Ewok(i));
+        }
     }
 
     public static Ewoks getInstance(int numOfEwoks) { // singleton instance checker  //TODO: make sure structure of Singelton is Correct
         if (instance == null) {
-            instance = new Ewoks(numOfEwoks);
+            instance = new Ewoks(numOfEwoks); 
         }
         return instance;
     }
