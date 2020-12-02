@@ -147,10 +147,9 @@ public class MessageBusImpl implements MessageBus {
 
     @Override
     public void unregister(MicroService m) {
-        messageQs.remove(m);
-        for (Message message : msPerMessageQ) {
-            msPerMessageQ.remove(message, m);
-
+      messageQs.remove(m);
+        for(Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()){
+            msPerMessageQ.remove(entry.getKey(),m);
         }
     }
 
