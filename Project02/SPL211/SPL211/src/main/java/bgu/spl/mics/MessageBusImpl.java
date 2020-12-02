@@ -2,7 +2,6 @@ package bgu.spl.mics;
 
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -15,7 +14,7 @@ public class MessageBusImpl implements MessageBus {
     private static MessageBusImpl instance = null;
     private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
     private static HashMap<Event, Future> futurePerEvent; //TODO: Make sure if needs to be concurrent
-    private static ConcurrentHashMap<MicroService,ConcurrentLinkedQueue< Class<? extends Message>>> messageQs; //TODO: true?
+    private static ConcurrentHashMap<MicroService,ConcurrentLinkedQueue<Message>> messageQs; 
 
 
 
@@ -111,38 +110,29 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    private void addToMessageQsPerMs(Class<? extends Message> type) { //TODO: figure out whether to sync
-        ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(type);
-        if(mss.size()!=1){
-            robin_matter(mss);
-        }else{
-            for (MicroService m : mss) {
-                if(!messageQs.get(m).contains(type)){
-                    messageQs.get(m).add(type);
-                }
-            }
-        }
-    }
-
-    private void robin_matter(ConcurrentLinkedQueue<MicroService> mss) {
-        while(!mss.isEmpty()){
-            //TODO: how to get attack num?
-        }
-    }
-
     @Override
     public void sendBroadcast(Broadcast b) {
-        Class<? extends Message> type = new Class<? extends Message>  (b);
-        addToMessageQsPerMs(type); //TODO: figure it out
-
+        if(!msPerMessageQ.containsValue(b)){
+            throw new RuntimeException("a event that hasn't been registered cant be broadcast");
+        }
+        ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b);
+        for (MicroService m : mss) {
+            messageQs.get(m).add(b);
+        }
     }
 
 
     @Override
     public <T> Future<T> sendEvent(Event<T> e) {
-        Class<? extends Message> type = new Class<? extends Message>  (e);
-        Future<T> f = futurePerEvent.get(type);
-        addToMessageQsPerMs(type); //TODO: figure it out
+        if(!msPerMessageQ.containsValue(e)){
+            throw new RuntimeException("an event that hasn't been registered cant be sent");
+        }
+        ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e);
+        MicroService m1 = mss.poll();
+        messageQs.get(m1).add(e);
+        mss.add(m1);
+        Future<T> f = new Future<>();
+        futurePerEvent.put(e,f);
         return f;
     }
 
