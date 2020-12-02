@@ -18,15 +18,14 @@ import bgu.spl.mics.application.messages.*;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LeiaMicroservice extends MicroService {
-	private Attack[] attacks;
-	
+    private Attack[] attacks;
+
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
-		this.attacks = attacks;
+        this.attacks = attacks;
     }
 
     @Override
     protected void initialize() {
-    	
     }
 }

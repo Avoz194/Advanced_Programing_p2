@@ -118,6 +118,7 @@ public class MessageBusImpl implements MessageBus {
         ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b);
         for (MicroService m : mss) {
             messageQs.get(m).add(b);
+            notifyAll(); //TODO: Sync, also decide if to place here or outside the loop
         }
     }
 
@@ -131,6 +132,7 @@ public class MessageBusImpl implements MessageBus {
         MicroService m1 = mss.poll();
         messageQs.get(m1).add(e);
         mss.add(m1);
+        notifyAll(); //TODO: Sync
         Future<T> f = new Future<>();
         futurePerEvent.put(e,f);
         return f;
@@ -146,10 +148,28 @@ public class MessageBusImpl implements MessageBus {
 
     }
 
-    @Override
+
+    /**
+     * Pulls a message from the MicroService's Q under messageQs HashMap.
+     * Throws exception if no Q was created.
+     * In case the Q is empty, wait until a message enters (notifyAll sent from @sendEvent and @sendBroadcast functions)
+     *
+     * Return a message
+     * <p>
+     *
+     * @param m      The microService asks to pull an event from it's Q
+     */
     public Message awaitMessage(MicroService m) throws InterruptedException {
-
-        return null;
+        if(!messageQs.containsKey(m)){
+            throw new RuntimeException("MicroService must be initialized before pulling a message");
+        }
+        ConcurrentLinkedQueue<Message> msQ = messageQs.get(m); //TODO: make sure works as pointer
+        while(msQ.isEmpty()){
+            try{
+                wait(); //TODO: Proper Sync here
+            }
+            catch (InterruptedException e){}
+        }
+        return msQ.poll();
     }
-
 }

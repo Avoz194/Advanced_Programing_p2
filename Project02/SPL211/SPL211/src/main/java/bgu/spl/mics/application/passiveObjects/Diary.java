@@ -1,6 +1,9 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import bgu.spl.mics.MicroService;
+
+
 /**
  * Passive data-object representing a Diary - in which the flow of the battle is recorded.
  * We are going to compare your recordings with the expected recordings, and make sure that your output makes sense.
