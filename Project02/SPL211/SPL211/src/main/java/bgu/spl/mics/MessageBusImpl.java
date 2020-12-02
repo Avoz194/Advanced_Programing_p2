@@ -128,24 +128,31 @@ public class MessageBusImpl implements MessageBus {
         if(!msPerMessageQ.containsValue(e)){
             throw new RuntimeException("an event that hasn't been registered cant be sent");
         }
-        ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e);
-        MicroService m1 = mss.poll();
-        messageQs.get(m1).add(e);
-        mss.add(m1);
-        notifyAll(); //TODO: Sync
-        Future<T> f = new Future<>();
-        futurePerEvent.put(e,f);
-        return f;
+          if (msPerMessageQ.isEmpty()) {
+            return null;
+        } else {
+            ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e);
+            MicroService m1 = mss.poll();
+            messageQs.get(m1).add(e);
+            mss.add(m1);
+            notifyAll(); //TODO: Sync
+              Future<T> f = new Future<>();
+            futurePerEvent.put(e, f);
+            return f;
+        }
     }
 
     @Override
     public void register(MicroService m) {
-
+        messageQs.put(m, new ConcurrentLinkedQueue<Message>());
     }
 
     @Override
     public void unregister(MicroService m) {
-
+      messageQs.remove(m);
+        for(Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()){
+            msPerMessageQ.remove(entry.getKey(),m);
+        }
     }
 
 
@@ -172,4 +179,5 @@ public class MessageBusImpl implements MessageBus {
         }
         return msQ.poll();
     }
+
 }
