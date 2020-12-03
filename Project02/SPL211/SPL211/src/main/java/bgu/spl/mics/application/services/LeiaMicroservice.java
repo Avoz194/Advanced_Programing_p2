@@ -37,7 +37,7 @@ public class LeiaMicroservice extends MicroService {
      * 1. Subscribe to VictoryBroadcast. The callback will log the time and terminate.
      * 2. Call manageAttacks() function to send and follow attacks
      * 3. call manageDeactivation() function to send and follow DeactivationEvent
-     * 4. call manageBobmDestroyer() function to send and follow BombDestroyerEvent
+     * 4. call manageBombDestroyer() function to send and follow BombDestroyerEvent
      * 5. send VictoryBroadcast to update the others.
      *
      */
@@ -52,7 +52,7 @@ public class LeiaMicroservice extends MicroService {
         catch (InterruptedException e){};
         manageAttacks();
         manageDeactivation();
-        manageBobmDestroyer();
+        manageBombDestroyer();
         sendBroadcast(new VictoryBroadcast());
 
     }
@@ -91,7 +91,7 @@ public class LeiaMicroservice extends MicroService {
     /**
      * Leia will use the function to send BombDestroyerEvent and follow it's future object.
      */
-    private void manageBobmDestroyer(){
+    private void manageBombDestroyer(){
         Future f = sendEvent(new BombDestroyerEvent());
         while (!f.isDone()){ //In order not to cast (although the result is always boolean in our flow), we use isDone function.
             try{
