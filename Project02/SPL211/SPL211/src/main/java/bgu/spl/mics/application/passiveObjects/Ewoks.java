@@ -123,4 +123,5 @@ public class Ewoks {
             // Merge the sorted halves
             merge(arr, l, m, r);
         }
+    }
 }
