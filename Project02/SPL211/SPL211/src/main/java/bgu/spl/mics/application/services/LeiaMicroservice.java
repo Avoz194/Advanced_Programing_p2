@@ -63,11 +63,14 @@ public class LeiaMicroservice extends MicroService {
      */
     private void manageAttacks(){
         ArrayList<Future> futuresToFollow = new ArrayList<>();
+        //Send attackEvents
         for(Attack at:attacks){
             AttackEvent e = new AttackEvent(at.getSerials(), at.getDuration());
             futuresToFollow.add(sendEvent(e));
         }
+        //No more attacks to send. Send NoMoreAttacksBroadcast
         sendBroadcast(new NoMoreAttacksBroadcast());
+        //Follow futures to make sure attacks are over.
         for(Future f:futuresToFollow){
             while (!f.isDone()){ //In order not to cast (although the result is always boolean in our flow), we use isDone function.
                 try{
