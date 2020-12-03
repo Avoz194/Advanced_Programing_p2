@@ -7,6 +7,7 @@ import bgu.spl.mics.application.messages.*;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * LandoMicroservice
@@ -15,10 +16,12 @@ import java.sql.Timestamp;
  */
 public class LandoMicroservice extends MicroService {
     private long duration;
+    private CountDownLatch LeiaReadyToStart;
 
-    public LandoMicroservice(long duration) {
+    public LandoMicroservice(long duration, CountDownLatch LeiaReadyToStart) {
         super("Lando");
         this.duration = duration;
+        this.LeiaReadyToStart = LeiaReadyToStart;
     }
 
     protected void initialize() {
@@ -33,5 +36,6 @@ public class LandoMicroservice extends MicroService {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setLandoTerminate(time.getTime());
         });
-    }
+        LeiaReadyToStart.countDown(); //Signal he finished initializing
+        // }
 }

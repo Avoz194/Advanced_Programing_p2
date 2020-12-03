@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
@@ -20,9 +21,12 @@ import bgu.spl.mics.application.messages.*;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
-    public LeiaMicroservice(Attack[] attacks) {
+    private CountDownLatch LeiaReadyToStart;
+
+    public LeiaMicroservice(Attack[] attacks,CountDownLatch LeiaReadyToStart) {
         super("Leia");
         this.attacks = attacks;
+        this.LeiaReadyToStart=LeiaReadyToStart;
     }
 
 
@@ -35,6 +39,7 @@ public class LeiaMicroservice extends MicroService {
      * The only message she'll subscribe to is the VictoryBroadcast in order to terminate with the others.
      * Initialize flow:
      * 1. Subscribe to VictoryBroadcast. The callback will log the time and terminate.
+     * 2. Wait's until other finished initialization.
      * 2. Call manageAttacks() function to send and follow attacks
      * 3. call manageDeactivation() function to send and follow DeactivationEvent
      * 4. call manageBombDestroyer() function to send and follow BombDestroyerEvent
@@ -47,7 +52,7 @@ public class LeiaMicroservice extends MicroService {
             Diary.getInstance().setLeiaTerminate(time.getTime());
         });
         try{
-            Thread.sleep(500); //Forum's Recommended solution for Leia sending events before other the threads initialization.
+            LeiaReadyToStart.await(); //use CountDownLatch to make sure other finished initializing
         }
         catch (InterruptedException e){};
         manageAttacks();

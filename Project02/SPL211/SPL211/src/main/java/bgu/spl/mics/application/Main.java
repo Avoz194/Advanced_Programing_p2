@@ -6,6 +6,6 @@ package bgu.spl.mics.application;
  */
 public class Main {
 	public static void main(String[] args) {
-		
+		//TODO: don't forget to create CountDownLatch with (4) and build each MS with it.
 	}
 }
