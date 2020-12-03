@@ -29,7 +29,7 @@ public class LandoMicroservice extends MicroService {
             }
             complete(event, true);
         });
-        subscribeBroadcast(VictoryBroadcast.class, (param) -> {
+        subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setLandoTerminate(time.getTime());
         });

@@ -22,18 +22,16 @@ import java.util.HashMap;
  */
 public abstract class MicroService implements Runnable {
 
+    
+    private HashMap<Class<? extends Message>, Callback> eventCallbacks;
+    private String msName;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      * does not have to be unique)
      */
-    private HashMap<Class<? extends Message>, Callback> eventCallbacks;
-    private HashMap<Event, Future> eventsToFollow; //TODO: Make sure needs to be concurrent
-    private String msName;
-
     public MicroService(String name) {
         eventCallbacks = new HashMap<>();
-        eventsToFollow = new HashMap<>();
         msName = name;
     }
 

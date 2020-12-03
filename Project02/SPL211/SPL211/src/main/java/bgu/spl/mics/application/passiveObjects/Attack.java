@@ -20,4 +20,8 @@ public class Attack {
         this.serials = serialNumbers;
         this.duration = duration;
     }
+    public List<Integer> getSerials(){return serials;} //TODO: make sure doesn't bother final mark
+    public int getDuration(){return duration;}
+
+
 }
