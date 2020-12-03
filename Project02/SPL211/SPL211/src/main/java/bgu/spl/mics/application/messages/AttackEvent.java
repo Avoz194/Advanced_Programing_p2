@@ -9,6 +9,7 @@ public class AttackEvent implements Event<Boolean> {
     private List<Integer> serials;
     private int duration;
 
+    public AttackEvent(){} //Empty constructor for tests
     public AttackEvent(List<Integer> ser, int dur) {
         serials = ser;
         duration = dur;

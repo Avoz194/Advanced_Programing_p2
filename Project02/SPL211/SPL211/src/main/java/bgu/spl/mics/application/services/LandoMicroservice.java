@@ -16,7 +16,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class LandoMicroservice extends MicroService {
     private long duration;
-    private CountDownLatch LeiaReadyToStart;
+    private CountDownLatch LeiaReadyToStart=null;
 
     public LandoMicroservice(long duration, CountDownLatch LeiaReadyToStart) {
         super("Lando");

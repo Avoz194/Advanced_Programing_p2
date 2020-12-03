@@ -21,7 +21,7 @@ import bgu.spl.mics.application.messages.*;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
-    private CountDownLatch LeiaReadyToStart;
+    private CountDownLatch LeiaReadyToStart=null;
 
     public LeiaMicroservice(Attack[] attacks,CountDownLatch LeiaReadyToStart) {
         super("Leia");

@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class R2D2Microservice extends MicroService {
 
-    private CountDownLatch LeiaReadyToStart;
+    private CountDownLatch LeiaReadyToStart=null;
 
     public R2D2Microservice(long durationת, CountDownLatch LeiaReadyToStart) {
         super("R2D2");

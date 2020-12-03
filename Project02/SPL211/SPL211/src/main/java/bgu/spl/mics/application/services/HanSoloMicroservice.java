@@ -16,8 +16,9 @@ import java.util.concurrent.CountDownLatch;
  */
 public class HanSoloMicroservice extends MicroService {
 
-    private CountDownLatch LeiaReadyToStart;
+    private CountDownLatch LeiaReadyToStart=null;
 
+    public HanSoloMicroservice(){super("Han");} //Empty Constructor for tests
     public HanSoloMicroservice(CountDownLatch LeiaReadyToStart) {
         super("Han");
         this.LeiaReadyToStart = LeiaReadyToStart;

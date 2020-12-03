@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public abstract class MicroService implements Runnable {
 
-    
+
     private HashMap<Class<? extends Message>, Callback> eventCallbacks;
     private String msName;
 
@@ -31,7 +31,7 @@ public abstract class MicroService implements Runnable {
      * does not have to be unique)
      */
     public MicroService(String name) {
-        eventCallbacks = new HashMap<>();
+        eventCallbacks = new HashMap();
         msName = name;
     }
 
