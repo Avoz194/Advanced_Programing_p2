@@ -25,9 +25,10 @@ public class LeiaMicroservice extends MicroService {
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
-        this.initializationCount = ServicesInitializationSync.getInstance().getInitializationCount();
     }
-
+    public void setInitializationCount(CountDownLatch initializationCount){
+        this.initializationCount=initializationCount;
+    }
 
     /**
      * BackGround: In our implementation, Leia is the commander of the crew, she manages all the actions, follow events,
