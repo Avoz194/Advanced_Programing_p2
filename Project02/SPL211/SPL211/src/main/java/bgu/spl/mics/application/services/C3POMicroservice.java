@@ -19,11 +19,7 @@ public class C3POMicroservice extends MicroService {
     private CountDownLatch LeiaReadyToStart =null;
 
     public C3POMicroservice(){super("C3PO");} //Empty Constructor for tests
-    public C3POMicroservice(CountDownLatch LeiaReadyToStart) {
-        super("C3PO");
-        this.LeiaReadyToStart = LeiaReadyToStart;
-    }
-
+    
     @Override
     protected void initialize() {
 

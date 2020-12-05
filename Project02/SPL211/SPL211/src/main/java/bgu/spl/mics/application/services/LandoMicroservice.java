@@ -15,12 +15,12 @@ import java.util.concurrent.CountDownLatch;
  */
 public class LandoMicroservice extends MicroService {
     private long duration;
-    private CountDownLatch LeiaReadyToStart = null;
+    private CountDownLatch initializationCount = null;
 
-    public LandoMicroservice(long duration, CountDownLatch LeiaReadyToStart) {
+    public LandoMicroservice(long duration) {
         super("Lando");
         this.duration = duration;
-        this.LeiaReadyToStart = LeiaReadyToStart;
+        this.initializationCount=ServicesInitializationSync.getInitializationCount();
     }
 
     protected void initialize() {
@@ -35,6 +35,6 @@ public class LandoMicroservice extends MicroService {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setLandoTerminate(time.getTime());
         });
-        LeiaReadyToStart.countDown(); //Signal he finished initializing
+        initializationCount.countDown(); //Signal he finished initializing
     }
 }

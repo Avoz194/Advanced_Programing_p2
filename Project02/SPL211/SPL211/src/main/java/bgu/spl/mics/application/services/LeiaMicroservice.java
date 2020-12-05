@@ -21,12 +21,12 @@ import bgu.spl.mics.application.messages.*;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
-    private CountDownLatch LeiaReadyToStart=null;
+    private CountDownLatch initializationCount=null;
 
-    public LeiaMicroservice(Attack[] attacks,CountDownLatch LeiaReadyToStart) {
+    public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
-        this.LeiaReadyToStart=LeiaReadyToStart;
+        this.initializationCount=ServicesInitializationSync.getInitializationCount();
     }
 
 
@@ -52,7 +52,7 @@ public class LeiaMicroservice extends MicroService {
             Diary.getInstance().setLeiaTerminate(time.getTime());
         });
         try{
-            LeiaReadyToStart.await(); //use CountDownLatch to make sure other finished initializing
+            initializationCount.await(); //use CountDownLatch to make sure other finished initializing
         }
         catch (InterruptedException e){};
         manageAttacks();
