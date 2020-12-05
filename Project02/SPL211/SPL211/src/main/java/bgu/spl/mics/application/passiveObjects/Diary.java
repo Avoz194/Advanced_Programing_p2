@@ -2,6 +2,8 @@ package bgu.spl.mics.application.passiveObjects;
 
 
 import bgu.spl.mics.MicroService;
+
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
-     private AtomicInteger totalAttacks ;
+    private AtomicInteger totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -21,17 +23,25 @@ public class Diary {
     private long C3POTerminate;
     private long R2D2Terminate;
     private long LandoTerminate;
+    private static Diary instance = null;
 
-    private Diary(){
+    private Diary() {
         totalAttacks = new AtomicInteger(0);
         HanSoloFinish = System.currentTimeMillis();
         C3POFinish = System.currentTimeMillis();
-        R2D2Deactivate =System.currentTimeMillis();
+        R2D2Deactivate = System.currentTimeMillis();
         LeiaTerminate = System.currentTimeMillis();
         HanSoloTerminate = System.currentTimeMillis();
         C3POTerminate = System.currentTimeMillis();
         R2D2Terminate = System.currentTimeMillis();
         LandoTerminate = System.currentTimeMillis();
+    }
+
+    public static Diary getInstance() { // singleton instance checker
+        if (instance == null) {
+            throw new NoSuchElementException("Diary shouldnt be initizalized first to null");
+        }
+        return instance;
     }
 
     public AtomicInteger getTotalAttacks() {
@@ -70,9 +80,14 @@ public class Diary {
         return LandoTerminate;
     }
 
-    public void setTotalAttacks(AtomicInteger totalAttacks) {
-        this.totalAttacks = totalAttacks;
+    //setTotalAttacks increase the number of attacks by one.
+    public void setTotalAttacks() {
+        this.totalAttacks.getAndIncrement();
     }
+
+//    public void incrementTotalAttacks(){ TODO: remove of not istetic
+//        this.totalAttacks.getAndIncrement();
+//    }
 
     public void setHanSoloFinish(long hanSoloFinish) {
         HanSoloFinish = hanSoloFinish;
@@ -106,3 +121,4 @@ public class Diary {
         LandoTerminate = landoTerminate;
     }
 }
+
