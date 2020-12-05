@@ -20,7 +20,7 @@ public class LandoMicroservice extends MicroService {
     public LandoMicroservice(long duration) {
         super("Lando");
         this.duration = duration;
-        this.initializationCount=ServicesInitializationSync.getInitializationCount();
+        this.initializationCount = ServicesInitializationSync.getInstance().getInitializationCount();
     }
 
     protected void initialize() {
