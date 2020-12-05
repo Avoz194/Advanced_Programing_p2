@@ -148,8 +148,8 @@ public abstract class MicroService implements Runnable {
      * Signals the event loop that it must terminate after handling the current
      * message.
      */
-    protected final void terminate()  {
-        Thread.currentThread().interrupt();
+    protected final void terminate() throws InterruptedException {
+        throw new InterruptedException("Please finish your task");
     }
 
 
@@ -165,7 +165,7 @@ public abstract class MicroService implements Runnable {
 
 
     /**
-     * The entry point of the micro-service. TODO: you must complete this code
+     * The entry point of the micro-service.  you must complete this code
      * otherwise you will end up in an infinite loop.
      */
     @Override

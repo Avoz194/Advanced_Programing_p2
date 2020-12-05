@@ -18,48 +18,53 @@ public class Ewoks {
     // private constructor
     private Ewoks(int numOfEwoks) {
         this.ewokVector = new Vector<Ewok>(numOfEwoks); // vector of ewoks
-        for (int i=0;i<numOfEwoks;i++){
-            ewokVector.set(i,new Ewok(i));
+        for (int i = 0; i < numOfEwoks; i++) {
+            ewokVector.set(i, new Ewok(i));
         }
     }
 
-    public static Ewoks getInstance(int numOfEwoks) { // singleton instance checker  //TODO: make sure structure of Singelton is Correct
-        if (instance == null) {
-            instance = new Ewoks(numOfEwoks); 
+    public static Ewoks getInstance(int numOfEwoks) { // singleton instance checker
+        synchronized (instance) { //TODO:revise
+            if (instance == null) {
+                instance = new Ewoks(numOfEwoks);
+            }
+            return instance;
         }
-        return instance;
-    }
-    public static Ewoks getInstance() { // singleton instance checker
-        if (instance == null) {
-            throw new NoSuchElementException("Ewoks should be initizalized first with the numOfEwoks in the program");
-        }
-        return instance;
     }
 
-    public void acquire(int [] ewoks) {
+    public static Ewoks getInstance() { // singleton instance checker for cases the si
+        synchronized (instance) {
+            if (instance == null) {
+                throw new NoSuchElementException("Ewoks should be initizalized first with the numOfEwoks in the program");
+            }
+            return instance;
+        }
+    }
+
+    public void acquire(int[] ewoks) {
 //        if (!(e.getAvailable()) || ewokVector.contains(e)) { //TODO: Replace with Sync
 //            throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
 //        }
-        sort(ewoks,0,ewoks.length-1);
-        for (int i = 0;i<ewoks.length; i++){
+        sort(ewoks, 0, ewoks.length - 1);
+        for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).acquire();
         }
 
 
     }
 
-    public void release(int [] ewoks) {
+    public void release(int[] ewoks) {
 //        if ((e.getAvailable()) || !(ewokVector.contains(e))) { //TODO: Replace with Sync
 //            throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
 
-        for (int i = 0;i<ewoks.length; i++){
+        for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).release();
         }
 
     }
+
     //merge-sort algorithm in order to avoid sync problem with acquiring ewoks TODO: is too fancy ?
-    public void merge(int arr[], int l, int m, int r)
-    {
+    public void merge(int arr[], int l, int m, int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
@@ -85,8 +90,7 @@ public class Ewoks {
             if (L[i] <= R[j]) {
                 arr[k] = L[i];
                 i++;
-            }
-            else {
+            } else {
                 arr[k] = R[j];
                 j++;
             }
@@ -110,8 +114,7 @@ public class Ewoks {
 
     // Main function that sorts arr[l..r] using
     // merge()
-    public void sort(int arr[], int l, int r)
-    {
+    public void sort(int arr[], int l, int r) {
         if (l < r) {
             // Find the middle point
             int m = (l + r) / 2;

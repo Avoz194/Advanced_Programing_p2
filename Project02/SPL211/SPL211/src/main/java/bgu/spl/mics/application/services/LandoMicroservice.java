@@ -5,7 +5,6 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 
 import bgu.spl.mics.application.messages.*;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class LandoMicroservice extends MicroService {
     private long duration;
-    private CountDownLatch LeiaReadyToStart=null;
+    private CountDownLatch LeiaReadyToStart = null;
 
     public LandoMicroservice(long duration, CountDownLatch LeiaReadyToStart) {
         super("Lando");
@@ -37,5 +36,5 @@ public class LandoMicroservice extends MicroService {
             Diary.getInstance().setLandoTerminate(time.getTime());
         });
         LeiaReadyToStart.countDown(); //Signal he finished initializing
-        // }
+    }
 }

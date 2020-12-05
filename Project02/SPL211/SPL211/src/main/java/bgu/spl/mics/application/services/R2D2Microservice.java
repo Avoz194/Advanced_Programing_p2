@@ -17,7 +17,7 @@ public class R2D2Microservice extends MicroService {
 
     private CountDownLatch LeiaReadyToStart=null;
 
-    public R2D2Microservice(long durationת, CountDownLatch LeiaReadyToStart) {
+    public R2D2Microservice(long duration, CountDownLatch LeiaReadyToStart) {
         super("R2D2");
         this.LeiaReadyToStart = LeiaReadyToStart;
     }

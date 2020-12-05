@@ -44,8 +44,8 @@ public class Diary {
         return instance;
     }
 
-    public AtomicInteger getTotalAttacks() {
-        return totalAttacks;
+    public int getTotalAttacks() {
+        return totalAttacks.get();
     }
 
     public long getHanSoloFinish() {
@@ -84,10 +84,6 @@ public class Diary {
     public void setTotalAttacks() {
         this.totalAttacks.getAndIncrement();
     }
-
-//    public void incrementTotalAttacks(){ TODO: remove of not istetic
-//        this.totalAttacks.getAndIncrement();
-//    }
 
     public void setHanSoloFinish(long hanSoloFinish) {
         HanSoloFinish = hanSoloFinish;

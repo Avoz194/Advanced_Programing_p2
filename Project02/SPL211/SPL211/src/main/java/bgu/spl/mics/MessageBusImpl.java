@@ -3,7 +3,6 @@ package bgu.spl.mics;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -13,23 +12,24 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class MessageBusImpl implements MessageBus {
     private static MessageBusImpl instance = null;
-    private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
-    private static HashMap<Event, Future> futurePerEvent; //TODO: Make sure if needs to be concurrent
-    private static ConcurrentHashMap<MicroService,ConcurrentLinkedQueue<Message>> messageQs; 
-
+    private static HashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
+    private static HashMap<Event, Future> futurePerEvent;
+    private static HashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;//TODO: Make sure needs to be concurrent
 
 
     private MessageBusImpl() {
-        msPerMessageQ = new ConcurrentHashMap<>();
+        msPerMessageQ = new HashMap<>();
         futurePerEvent = new HashMap<>();
-        messageQs = new ConcurrentHashMap<>();
+        messageQs = new HashMap<>();
     }
-    
+
     public static MessageBusImpl getInstance() {
-        if (instance == null) { //TODO: sync
-            instance = new MessageBusImpl();
+        synchronized (instance) {  //TODO:revise
+            if (instance == null) {
+                instance = new MessageBusImpl();
+            }
+            return instance;
         }
-        return instance;
     }
 
     /**
@@ -44,10 +44,14 @@ public class MessageBusImpl implements MessageBus {
      *             to subscribe to.
      * @param m    The microService to register to this type of Message.
      */
-    private void addToMsPerMessageQ(Class<? extends Message> type, MicroService m) { //TODO: figure out whether to sync
-        if (!msPerMessageQ.containsKey(type))
-            msPerMessageQ.put(type, new ConcurrentLinkedQueue<>());
-        msPerMessageQ.get(type).add(m);
+    private void addToMsPerMessageQ(Class<? extends Message> type, MicroService m) {
+        synchronized (msPerMessageQ) {
+            if (!msPerMessageQ.containsKey(type))
+                msPerMessageQ.put(type, new ConcurrentLinkedQueue<>());
+        }
+        synchronized (msPerMessageQ.get(type)) {
+            msPerMessageQ.get(type).add(m);
+        }
     }
 
     /**
@@ -107,52 +111,69 @@ public class MessageBusImpl implements MessageBus {
             if (f.isDone())
                 throw new RuntimeException("Can't resolve an already resolved future");
             else
-                f.resolve(result); //TODO:Resolve should be synced
+                f.resolve(result);
         }
     }
 
-    @Override
     public void sendBroadcast(Broadcast b) {
-        if(!msPerMessageQ.containsValue(b)){
-            throw new RuntimeException("a event that hasn't been registered cant be broadcast");
-        }
-        ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b);
-        for (MicroService m : mss) {
-            messageQs.get(m).add(b);
-            notifyAll(); //TODO: Sync, also decide if to place here or outside the loop
+        if (msPerMessageQ.containsValue(b)) {
+
+            ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b);
+            synchronized (mss) {
+                for (MicroService m : mss) {
+                    ConcurrentLinkedQueue<Message> msQ = messageQs.get(m);
+                    synchronized (msQ) {
+                        msQ.add(b);
+                        notifyAll();
+                    }
+                }
+            }
         }
     }
 
-
-    @Override
-    public <T> Future<T> sendEvent(Event<T> e) {
-        if(!msPerMessageQ.containsValue(e)){
-            throw new RuntimeException("an event that hasn't been registered cant be sent");
+    private MicroService getMSForEvent(ConcurrentLinkedQueue<MicroService> qOfMS) {
+        synchronized (qOfMS) {
+            if (qOfMS.isEmpty()) {
+                return null;
+            }
+            MicroService m1 = qOfMS.poll();
+            qOfMS.add(m1);
+            return m1;
         }
-          if (msPerMessageQ.isEmpty()) {
+    }
+
+    public <T> Future<T> sendEvent(Event<T> e) {
+        if (!msPerMessageQ.containsValue(e)) {
             return null;
         } else {
             ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e);
-            MicroService m1 = mss.poll();
-            messageQs.get(m1).add(e);
-            mss.add(m1);
-            notifyAll(); //TODO: Sync
-              Future<T> f = new Future<>();
+            MicroService m1 = getMSForEvent(mss); //TODO:make sure works
+            if (m1 == null) return null;
+            ConcurrentLinkedQueue<Message> msQ = messageQs.get(m1);
+            synchronized (msQ) {
+                msQ.add(e);
+                notifyAll();
+            }
+            Future<T> f = new Future<>();
             futurePerEvent.put(e, f);
             return f;
         }
     }
 
-    @Override
     public void register(MicroService m) {
-        messageQs.put(m, new ConcurrentLinkedQueue<Message>());
+        synchronized (messageQs) { //TODO: consider adding a counter of how many Q's are blocked in order to block messageQ as a whole
+            messageQs.put(m, new ConcurrentLinkedQueue<Message>());
+        }
     }
 
-    @Override
     public void unregister(MicroService m) {
-      messageQs.remove(m);
-        for(Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()){
-            msPerMessageQ.remove(entry.getKey(),m);
+        synchronized (messageQs) {
+            messageQs.remove(m);
+        }
+        synchronized (msPerMessageQ) {
+            for (Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()) {
+                msPerMessageQ.remove(entry.getKey(), m);
+            }
         }
     }
 
@@ -161,24 +182,28 @@ public class MessageBusImpl implements MessageBus {
      * Pulls a message from the MicroService's Q under messageQs HashMap.
      * Throws exception if no Q was created.
      * In case the Q is empty, wait until a message enters (notifyAll sent from @sendEvent and @sendBroadcast functions)
-     *
+     * <p>
      * Return a message
      * <p>
      *
-     * @param m      The microService asks to pull an event from it's Q
+     * @param m The microService asks to pull an event from it's Q
      */
     public Message awaitMessage(MicroService m) throws InterruptedException {
-        if(!messageQs.containsKey(m)){
-            throw new RuntimeException("MicroService must be initialized before pulling a message");
-        }
-        ConcurrentLinkedQueue<Message> msQ = messageQs.get(m); //TODO: make sure works as pointer
-        while(msQ.isEmpty()){
-            try{
-                wait(); //TODO: Proper Sync here
+        synchronized (messageQs) {
+            if (!messageQs.containsKey(m)) {
+                throw new RuntimeException("MicroService must be registered before pulling a message");
             }
-            catch (InterruptedException e){}
         }
-        return msQ.poll();
+        ConcurrentLinkedQueue<Message> msQ = messageQs.get(m);
+        synchronized (msQ) {
+            while (msQ.isEmpty()) {
+                try {
+                    msQ.wait();
+                } catch (InterruptedException e) {
+                }
+            }
+            return msQ.poll();
+        }
     }
 
 }
