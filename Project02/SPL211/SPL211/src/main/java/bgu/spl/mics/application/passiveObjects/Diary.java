@@ -47,8 +47,8 @@ public class Diary {
         }
     }
 
-    public AtomicInteger getTotalAttacks() {
-        return totalAttacks;
+    public int getTotalAttacks() {
+        return totalAttacks.get();
     }
 
     public long getHanSoloFinish() {
