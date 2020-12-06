@@ -10,8 +10,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
+
 public class MessageBusImpl implements MessageBus {
-    private static MessageBusImpl instance = null;
+    private static class SingletonHolder {
+        private static MessageBusImpl instance = new MessageBusImpl();
+    }
+
     private static HashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
     private static HashMap<Event, Future> futurePerEvent;
     private static HashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;//TODO: Make sure needs to be concurrent
@@ -23,13 +27,8 @@ public class MessageBusImpl implements MessageBus {
         messageQs = new HashMap<>();
     }
 
-    public synchronized static MessageBusImpl getInstance() {
-         //TODO:revise
-            if (instance == null) {
-                instance = new MessageBusImpl();
-            }
-            return instance;
-
+    public static MessageBusImpl getInstance() {
+        return SingletonHolder.instance;
     }
 
     /**
