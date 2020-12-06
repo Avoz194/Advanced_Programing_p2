@@ -38,14 +38,16 @@ public class Diary {
     }
 
     public static Diary getInstance() { // singleton instance checker
-        if (instance == null) {
-            throw new NoSuchElementException("Diary shouldnt be initizalized first to null");
+        synchronized (instance) {
+            if (instance == null) {
+                instance = new Diary();
+            }
+            return instance;
         }
-        return instance;
     }
 
-    public int getTotalAttacks() {
-        return totalAttacks.get();
+    public AtomicInteger getTotalAttacks() {
+        return totalAttacks;
     }
 
     public long getHanSoloFinish() {
@@ -80,8 +82,8 @@ public class Diary {
         return LandoTerminate;
     }
 
-    //setTotalAttacks increase the number of attacks by one.
-    public void setTotalAttacks() {
+    //incrementTotalAttacks increase the number of attacks by one.
+    public void incrementTotalAttacks() {
         this.totalAttacks.getAndIncrement();
     }
 
