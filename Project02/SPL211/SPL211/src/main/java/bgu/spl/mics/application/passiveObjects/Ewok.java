@@ -19,17 +19,21 @@ public class Ewok {
     }
 
     public boolean getAvailable() {
-        return available;
+        synchronized (this) {
+            return available;
+        }
     }
 
     /**
      * Acquires an Ewok
      */
     public void acquire() {
-        if (!available) { //TODO: change to sync
-            throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
-        } else {
-            this.available = true;
+        synchronized (this) {
+            if (!available) { //TODO: change to sync
+                throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
+            } else {
+                this.available = true;
+            }
         }
     }
 
@@ -37,10 +41,12 @@ public class Ewok {
      * release an Ewok
      */
     public void release() {
-        if (available) {
-            throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
-        } else {
-            this.available = false;
+        synchronized (this) {
+            if (available) {
+                throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
+            } else {
+                this.available = false;
+            }
         }
     }
 }

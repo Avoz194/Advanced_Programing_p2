@@ -2,7 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
-
+import java.sql.Timestamp;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -15,16 +15,30 @@ import java.util.concurrent.CountDownLatch;
  */
 public class R2D2Microservice extends MicroService {
 
-    private CountDownLatch LeiaReadyToStart=null;
+    private long duration;
+    private CountDownLatch initializationCount = null;
 
     public R2D2Microservice(long duration) {
         super("R2D2");
-        this.LeiaReadyToStart = LeiaReadyToStart;
+        this.duration = duration;
+    }
+    public void setInitializationCount(CountDownLatch initializationCount){
+        this.initializationCount=initializationCount;
     }
 
     @Override
     protected void initialize() {
-
-        LeiaReadyToStart.countDown(); //Signal he finished initializing
+        subscribeEvent(DeactivationEvent.class, (DeactivationEvent event) -> {
+            try {
+                Thread.sleep(duration);
+            } catch (InterruptedException e) {
+            }
+            complete(event, true);
+        });
+        subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            Diary.getInstance().setR2D2Terminate(time.getTime());
+        });
+        initializationCount.countDown(); //Signal he finished initializing
     }
 }
