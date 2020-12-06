@@ -42,9 +42,7 @@ public class Ewoks {
     }
 
     public void acquire(int[] ewoks) {
-//        if (!(e.getAvailable()) || ewokVector.contains(e)) { //TODO: Replace with Sync
-//            throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
-//        }
+       //TODO: to change the collection ?
         sort(ewoks, 0, ewoks.length - 1);
         for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).acquire();
@@ -54,9 +52,6 @@ public class Ewoks {
     }
 
     public void release(int[] ewoks) {
-//        if ((e.getAvailable()) || !(ewokVector.contains(e))) { //TODO: Replace with Sync
-//            throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
-
         for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).release();
         }
