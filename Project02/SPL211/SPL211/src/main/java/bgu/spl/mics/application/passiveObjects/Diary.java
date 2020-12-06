@@ -37,6 +37,7 @@ public class Diary {
         LandoTerminate = System.currentTimeMillis();
     }
 
+    //TODO: need to fix getInstance
     public static Diary getInstance() { // singleton instance checker
         if (instance == null) {
             throw new NoSuchElementException("Diary shouldnt be initizalized first to null");

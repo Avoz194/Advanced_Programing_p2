@@ -23,13 +23,13 @@ public class MessageBusImpl implements MessageBus {
         messageQs = new HashMap<>();
     }
 
-    public static MessageBusImpl getInstance() {
-        synchronized (instance) {  //TODO:revise
+    public synchronized static MessageBusImpl getInstance() {
+         //TODO:revise
             if (instance == null) {
                 instance = new MessageBusImpl();
             }
             return instance;
-        }
+
     }
 
     /**

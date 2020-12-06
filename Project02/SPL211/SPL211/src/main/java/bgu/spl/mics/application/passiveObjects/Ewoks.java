@@ -23,23 +23,22 @@ public class Ewoks {
         }
     }
 
-    public static Ewoks getInstance(int numOfEwoks) { // singleton instance checker
-        synchronized (instance) { //TODO:revise
+    public synchronized static Ewoks getInstance(int numOfEwoks) { // singleton instance checker
+         //TODO:revise
             if (instance == null) {
                 instance = new Ewoks(numOfEwoks);
             }
             return instance;
-        }
+
     }
 
-    public static Ewoks getInstance() { // singleton instance checker for cases the si
-        synchronized (instance) {
+    public synchronized static Ewoks getInstance() { // singleton instance checker for cases the si
             if (instance == null) {
                 throw new NoSuchElementException("Ewoks should be initizalized first with the numOfEwoks in the program");
             }
             return instance;
         }
-    }
+
 
     public void acquire(int[] ewoks) {
 //        if (!(e.getAvailable()) || ewokVector.contains(e)) { //TODO: Replace with Sync
