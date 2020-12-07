@@ -116,15 +116,15 @@ public class MessageBusImpl implements MessageBus {
     }
 
     public void sendBroadcast(Broadcast b) {
-        if (msPerMessageQ.containsValue(b)) {
+        if (msPerMessageQ.containsKey(b.getClass())) {
 
-            ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b);
+            ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b.getClass());
             synchronized (mss) {
                 for (MicroService m : mss) {
                     ConcurrentLinkedQueue<Message> msQ = messageQs.get(m);
                     synchronized (msQ) {
                         msQ.add(b);
-                        notifyAll();
+                        msQ.notifyAll();
                     }
                 }
             }
@@ -143,16 +143,16 @@ public class MessageBusImpl implements MessageBus {
     }
 
     public <T> Future<T> sendEvent(Event<T> e) {
-        if (!msPerMessageQ.containsValue(e)) {
+        if (!msPerMessageQ.containsKey(e.getClass())) {
             return null;
         } else {
-            ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e);
+            ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e.getClass());
             MicroService m1 = getMSForEvent(mss); //TODO:make sure works
             if (m1 == null) return null;
             ConcurrentLinkedQueue<Message> msQ = messageQs.get(m1);
             synchronized (msQ) {
                 msQ.add(e);
-                notifyAll();
+                msQ.notifyAll();
             }
             Future<T> f = new Future<>();
             futurePerEvent.put(e, f);

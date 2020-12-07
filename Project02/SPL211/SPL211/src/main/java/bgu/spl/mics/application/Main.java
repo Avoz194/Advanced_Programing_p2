@@ -56,22 +56,22 @@ public class Main {
         Thread C3POT = new Thread(C3PO);
         Thread LandoT = new Thread(Lando);
 
-        LeiaT.run();
-        R2D2T.run();
-        HanSoloT.run();
-        C3POT.run();
-        LandoT.run();
+        HanSoloT.start();
+        System.out.println("HanSoloT ran");
+        C3POT.start();
+        System.out.println("C3POT ran");
+        R2D2T.start();
+        System.out.println("R2D2T ran");
+        LandoT.start();
+        System.out.println("LandoT ran");
+        LeiaT.start();
+        System.out.println("Leia ran");
+
 
         //Wait until all finished
-        try {
-            LeiaT.join();
-        } catch (InterruptedException e) {
-        }
 
-        try {
-            R2D2T.join();
-        } catch (InterruptedException e) {
-        }
+
+
 
         try {
             HanSoloT.join();
@@ -85,6 +85,14 @@ public class Main {
 
         try {
             LandoT.join();
+        } catch (InterruptedException e) {
+        }
+        try {
+            R2D2T.join();
+        } catch (InterruptedException e) {
+        }
+        try {
+            LeiaT.join();
         } catch (InterruptedException e) {
         }
 
