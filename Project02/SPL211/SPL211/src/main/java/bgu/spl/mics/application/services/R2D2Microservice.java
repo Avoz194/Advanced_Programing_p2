@@ -1,9 +1,11 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+
 import bgu.spl.mics.application.messages.*;
 import java.sql.Timestamp;
 import java.util.concurrent.CountDownLatch;
+import bgu.spl.mics.application.passiveObjects.Diary;
 
 /**
  * R2D2Microservices is in charge of the handling {@link DeactivationEvent}.
