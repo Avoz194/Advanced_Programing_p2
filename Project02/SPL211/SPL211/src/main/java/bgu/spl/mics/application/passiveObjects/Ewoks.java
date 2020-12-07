@@ -17,7 +17,11 @@ public class Ewoks {
 
     // private constructor
     private Ewoks(int numOfEwoks) {
-        this.ewokVector = new Vector<Ewok>(numOfEwoks); // vector of ewoks
+        this.ewokVector = new Vector<Ewok>(numOfEwoks); // vector of ewoks//TODO: should it be empty ?
+        init(numOfEwoks);
+    }
+
+    private void init(int numOfEwoks){
         for (int i = 0; i < numOfEwoks; i++) {
             ewokVector.set(i, new Ewok(i));
         }
