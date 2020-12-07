@@ -46,12 +46,10 @@ public class C3POMicroservice extends MicroService {
         subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setC3POTerminate(time.getTime());
-            complete(broad, true);
         });
         subscribeBroadcast(NoMoreAttacksBroadcast.class, (NoMoreAttacksBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setC3POFinish(time.getTime());
-            complete(broad, true);
         });
 
 
