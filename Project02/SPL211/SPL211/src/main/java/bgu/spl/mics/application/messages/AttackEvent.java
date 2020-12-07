@@ -14,5 +14,6 @@ public class AttackEvent implements Event<Boolean> {
         serials = ser;
         duration = dur;
     }
-
+    public int getDuration(){return duration;}
+    public List<Integer> getSerial(){return serials;}
 }
