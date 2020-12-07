@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
+    private static class SingletonHolder{
+        private static Diary instance = new Diary();
+    }
     private AtomicInteger totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
@@ -23,7 +26,7 @@ public class Diary {
     private long C3POTerminate;
     private long R2D2Terminate;
     private long LandoTerminate;
-    private static Diary instance = null;
+
 
     private Diary() {
         totalAttacks = new AtomicInteger(0);
@@ -38,13 +41,8 @@ public class Diary {
     }
 
     //TODO: need to fix getInstance
-    public static Diary getInstance() { // singleton instance checker
-        synchronized (instance) {
-            if (instance == null) {
-                instance = new Diary();
-            }
-            return instance;
-        }
+    public static synchronized Diary getInstance() { // singleton instance checker
+            return SingletonHolder.instance;
     }
 
     public int getTotalAttacks() {
