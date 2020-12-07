@@ -56,7 +56,7 @@ public class Main {
         Thread LandoT = new Thread(Lando);
 
         LeiaT.run();
-        R2D2.run();
+        R2D2T.run();
         HanSoloT.run();
         C3POT.run();
         LandoT.run();
@@ -95,7 +95,7 @@ public class Main {
         } catch (IOException e) {
         }
         Gson gson = new Gson();
-        gson.toJson(diary, writer);
+        gson.toJson(diary, writer); //TODO:works?
         try {
             writer.close();
         } catch (IOException e) {
