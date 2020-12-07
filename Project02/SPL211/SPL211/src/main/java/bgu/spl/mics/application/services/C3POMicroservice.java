@@ -3,6 +3,8 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.MicroService;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -16,14 +18,52 @@ import java.util.concurrent.CountDownLatch;
  */
 public class C3POMicroservice extends MicroService {
 
-    private CountDownLatch LeiaReadyToStart =null;
+    private CountDownLatch initializationCount = null;
 
-    public C3POMicroservice(){super("C3PO");} //Empty Constructor for tests
-    
+    public C3POMicroservice() {
+        super("C3PO");
+    } //Empty Constructor for tests
+
+    public void setInitializationCount(CountDownLatch initializationCount) {
+        this.initializationCount = initializationCount;
+    }
+
     @Override
     protected void initialize() {
+        subscribeEvent(AttackEvent.class, (AttackEvent event) -> {
+            int[] ewoks = array(event.getSerial());
+            long duration = event.getDuration();
+            Ewoks.getInstance().acquire(ewoks);
+            try {
+                Thread.sleep(duration);
+            } catch (InterruptedException e) {
+
+            }
+            Ewoks.getInstance().release(ewoks);
+            Diary.getInstance().incrementTotalAttacks();
+            complete(event, true);
+        });
+        subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            Diary.getInstance().setC3POTerminate(time.getTime());
+            complete(broad, true);
+        });
+        subscribeBroadcast(NoMoreAttacksBroadcast.class, (NoMoreAttacksBroadcast broad) -> {
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            Diary.getInstance().setC3POFinish(time.getTime());
+            complete(broad, true);
+        });
 
 
-        LeiaReadyToStart.countDown(); //Signal he finished initializing
+        initializationCount.countDown(); //Signal he finished initializing
+    }
+
+    private int[] array(List<Integer> l) {
+        int[] ans = new int[l.size()];
+        for (int i = 0; i < l.size(); i++) {
+            ans[i] = l.get(i);
+        }
+        return ans;
     }
 }
+
