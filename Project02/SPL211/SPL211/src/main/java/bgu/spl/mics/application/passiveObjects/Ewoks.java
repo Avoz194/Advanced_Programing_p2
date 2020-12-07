@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
+import bgu.spl.mics.MessageBusImpl;
+
 import java.util.*;
 
 
@@ -12,57 +14,54 @@ import java.util.*;
  * You can add ONLY private methods and fields to this class.
  */
 public class Ewoks {
+    private static class SingletonHolder {
+        private static Ewoks instance = new Ewoks(0);
+    }
     private Vector<Ewok> ewokVector; //vector because it is tread safe
-    private static Ewoks instance = null; //  ewok is a singleton
 
     // private constructor
     private Ewoks(int numOfEwoks) {
-        this.ewokVector = new Vector<Ewok>(numOfEwoks); // vector of ewoks//TODO: should it be empty ?
+        this.ewokVector = new Vector<Ewok>(); // vector of ewoks
         init(numOfEwoks);
     }
+    public static Ewoks getInstance() {
+        return Ewoks.SingletonHolder.instance;
+    }
 
-    private void init(int numOfEwoks){
+    public synchronized void init(int numOfEwoks){
+        if(ewokVector.size()!=0){
+            throw new IllegalArgumentException("the vector should be empty in this moment");
+        }
         for (int i = 0; i < numOfEwoks; i++) {
-            ewokVector.set(i, new Ewok(i));
+            this.ewokVector.set(i, new Ewok(i));
         }
     }
 
-    public synchronized static Ewoks getInstance(int numOfEwoks) { // singleton instance checker
-         //TODO:revise
-            if (instance == null) {
-                instance = new Ewoks(numOfEwoks);
-            }
-            return instance;
-
-    }
-
-    public synchronized static Ewoks getInstance() { // singleton instance checker for cases the si
-            if (instance == null) {
-                throw new NoSuchElementException("Ewoks should be initizalized first with the numOfEwoks in the program");
-            }
-            return instance;
-        }
+//    public synchronized static Ewoks getInstance(int numOfEwoks) { // singleton instance checker
+//        //TODO:revise
+//        if (instance == null) {
+//            instance = new Ewoks(numOfEwoks);
+//        }
+//        return instance;
+//    }
 
 
     public void acquire(int[] ewoks) {
-       //TODO: to change the collection ?
+        //TODO: to change the collection ?
         sort(ewoks, 0, ewoks.length - 1);
         for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).acquire();
         }
-
-
     }
 
     public void release(int[] ewoks) {
         for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).release();
         }
-
     }
 
     //merge-sort algorithm in order to avoid sync problem with acquiring ewoks TODO: is too fancy ?
-    public void merge(int arr[], int l, int m, int r) {
+    public void merge(int[] arr, int l, int m, int r) {
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
