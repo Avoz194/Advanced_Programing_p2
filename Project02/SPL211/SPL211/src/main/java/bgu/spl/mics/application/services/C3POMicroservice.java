@@ -2,6 +2,8 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -30,6 +32,9 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
+
+         /*Please note that the duplicate code fragment for HanSolo and C3PO below (AttackEvent Callback) is due to the
+        inability to complete the event from outside a MicroService instance.*/ //TODO: Try to find a solution
         subscribeEvent(AttackEvent.class, (AttackEvent event) -> {
             int[] ewoks = array(event.getSerial());
             long duration = event.getDuration();
@@ -51,7 +56,6 @@ public class C3POMicroservice extends MicroService {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setC3POFinish(time.getTime());
         });
-
 
         initializationCount.countDown(); //Signal he finished initializing
     }

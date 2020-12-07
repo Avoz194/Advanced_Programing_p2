@@ -40,8 +40,7 @@ public class Diary {
         LandoTerminate = System.currentTimeMillis();
     }
 
-    //TODO: need to fix getInstance
-    public static synchronized Diary getInstance() { // singleton instance checker
+    public static Diary getInstance() { // singleton instance checker
             return SingletonHolder.instance;
     }
 

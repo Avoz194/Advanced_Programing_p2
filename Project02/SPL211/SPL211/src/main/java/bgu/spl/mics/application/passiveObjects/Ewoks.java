@@ -15,16 +15,15 @@ import java.util.*;
  */
 public class Ewoks {
     private static class SingletonHolder {
-        private static Ewoks instance = new Ewoks(0);
+        private static Ewoks instance = new Ewoks();
     }
     private Vector<Ewok> ewokVector; //vector because it is tread safe
 
     // private constructor
-    private Ewoks(int numOfEwoks) {
+    private Ewoks() {
         this.ewokVector = new Vector<Ewok>(); // vector of ewoks
-        init(numOfEwoks);
     }
-    public static Ewoks getInstance() {
+    public static  Ewoks getInstance() {
         return Ewoks.SingletonHolder.instance;
     }
 
@@ -33,7 +32,7 @@ public class Ewoks {
             throw new IllegalArgumentException("the vector should be empty in this moment");
         }
         for (int i = 0; i < numOfEwoks; i++) {
-            this.ewokVector.set(i, new Ewok(i));
+            this.ewokVector.add(new Ewok(i));
         }
     }
 
@@ -47,7 +46,7 @@ public class Ewoks {
 
 
     public void acquire(int[] ewoks) {
-        //TODO: to change the collection ?
+        //TODO: to change the collection to ArrayList
         sort(ewoks, 0, ewoks.length - 1);
         for (int i = 0; i < ewoks.length; i++) {
             ewokVector.elementAt(ewoks[i]).acquire();

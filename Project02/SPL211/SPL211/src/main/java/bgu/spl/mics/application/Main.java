@@ -32,7 +32,8 @@ public class Main {
 
         //ApplicationCreation
         MessageBusImpl.getInstance();
-        Ewoks.getInstance(input.getEwoks());
+        Ewoks ewoksInstance = Ewoks.getInstance();
+        ewoksInstance.init(input.getEwoks());
         Diary diary = Diary.getInstance();
         LeiaMicroservice Leia = new LeiaMicroservice(input.getAttacks());
         R2D2Microservice R2D2 = new R2D2Microservice(input.getR2D2());
