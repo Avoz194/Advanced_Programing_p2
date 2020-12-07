@@ -61,7 +61,7 @@ public class HanSoloMicroservice extends MicroService {
 
     private int[] array(List<Integer> l) {
         int[] ans = new int[l.size()];
-        for (int i = 0; i < l.size(); i++) {
+       for (Integer i:l) {
             ans[i] = l.get(i);
         }
         return ans;
