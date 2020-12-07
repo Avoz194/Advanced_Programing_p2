@@ -4,6 +4,7 @@ package bgu.spl.mics;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -16,15 +17,15 @@ public class MessageBusImpl implements MessageBus {
         private static MessageBusImpl instance = new MessageBusImpl();
     }
 
-    private static HashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
+    private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
     private static HashMap<Event, Future> futurePerEvent;
-    private static HashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;//TODO: Make sure needs to be concurrent
+    private static ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;//TODO: Make sure needs to be concurrent
 
 
     private MessageBusImpl() {
-        msPerMessageQ = new HashMap<>();
+        msPerMessageQ = new ConcurrentHashMap<>();
         futurePerEvent = new HashMap<>();
-        messageQs = new HashMap<>();
+        messageQs = new ConcurrentHashMap<>();
     }
 
     public static MessageBusImpl getInstance() {
