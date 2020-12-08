@@ -49,6 +49,7 @@ public class LeiaMicroservice extends MicroService {
         subscribeBroadcast(VictoryBroadcast.class, (param) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setLeiaTerminate(time.getTime());
+            terminate();
         });
         try {
             initializationCount.await(); //use CountDownLatch to make sure other finished initializing
@@ -56,9 +57,17 @@ public class LeiaMicroservice extends MicroService {
         }
         ;
         manageAttacks();
+        System.out.println("Leia attack finish"); //TODO:remove prints
+
         manageDeactivation();
+        System.out.println("Leia De finish"); //TODO:remove prints
+
         manageBombDestroyer();
+        System.out.println("Leia bomb finish"); //TODO:remove prints
+
         sendBroadcast(new VictoryBroadcast());
+        System.out.println("Leia send victory"); //TODO:remove prints
+
 
     }
 

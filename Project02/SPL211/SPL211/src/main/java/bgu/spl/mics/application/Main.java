@@ -57,7 +57,7 @@ public class Main {
         Thread LandoT = new Thread(Lando);
 
         HanSoloT.start();
-        System.out.println("HanSoloT ran");
+        System.out.println("HanSoloT ran"); //TODO:remove prints
         C3POT.start();
         System.out.println("C3POT ran");
         R2D2T.start();

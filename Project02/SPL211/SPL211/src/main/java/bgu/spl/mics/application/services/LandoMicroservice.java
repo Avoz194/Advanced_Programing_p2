@@ -36,6 +36,8 @@ public class LandoMicroservice extends MicroService {
         subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setLandoTerminate(time.getTime());
+            terminate();
+
         });
         initializationCount.countDown(); //Signal he finished initializing
     }

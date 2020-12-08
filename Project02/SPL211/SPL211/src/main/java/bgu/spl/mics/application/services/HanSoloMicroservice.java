@@ -54,10 +54,14 @@ public class HanSoloMicroservice extends MicroService {
         subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setHanSoloTerminate(time.getTime());
+            terminate();
+
         });
         subscribeBroadcast(NoMoreAttacksBroadcast.class, (NoMoreAttacksBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setHanSoloFinish(time.getTime());
+            System.out.println("HanSoloT finish"); //TODO:remove prints
+
         });
 
 

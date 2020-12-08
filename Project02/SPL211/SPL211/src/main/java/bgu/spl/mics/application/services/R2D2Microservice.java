@@ -40,6 +40,8 @@ public class R2D2Microservice extends MicroService {
         subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setR2D2Terminate(time.getTime());
+            terminate();
+
         });
         initializationCount.countDown(); //Signal he finished initializing
     }

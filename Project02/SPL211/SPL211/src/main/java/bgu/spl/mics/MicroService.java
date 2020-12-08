@@ -148,8 +148,8 @@ public abstract class MicroService implements Runnable {
      * Signals the event loop that it must terminate after handling the current
      * message.
      */
-    protected final void terminate() throws InterruptedException {
-        throw new InterruptedException("Please finish your task");
+    protected final void terminate() {
+       Thread.currentThread().interrupt();
     }
 
 
@@ -181,6 +181,8 @@ public abstract class MicroService implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
+        System.out.println(Thread.currentThread().getName() +"before unregister"); //TODO:remove
+
         mb.unregister(this);
     }
 

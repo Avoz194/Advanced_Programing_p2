@@ -28,14 +28,14 @@ public class Ewok {
      * Acquires an Ewok
      */
     public synchronized void acquire() {
-        while (!available) { //TODO: change to sync
+        while (!available) {
             try {
                 this.wait();
             } catch (InterruptedException e) {
             }
         }
         this.available = false;
-        System.out.println(Thread.currentThread().getName() +"Acquired ewok" + serialNumber);
+        System.out.println(Thread.currentThread().getName() +"Acquired ewok" + serialNumber); //TODO:remove
     }
 
     /**
@@ -46,7 +46,7 @@ public class Ewok {
             throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
         } else {
             this.available = true;
-            System.out.println(Thread.currentThread().getName() +"released ewok" + serialNumber);
+            System.out.println(Thread.currentThread().getName() +"released ewok" + serialNumber); //TODO:remove
 
             this.notifyAll();
         }
