@@ -35,6 +35,9 @@ public class R2D2Microservice extends MicroService {
                 Thread.sleep(duration);
             } catch (InterruptedException e) {
             }
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            Diary.getInstance().setR2D2Deactivate(time.getTime());
+
             complete(event, true);
         });
         subscribeBroadcast(VictoryBroadcast.class, (VictoryBroadcast broad) -> {

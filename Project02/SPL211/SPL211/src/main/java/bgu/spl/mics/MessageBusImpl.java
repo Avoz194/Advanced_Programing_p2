@@ -172,7 +172,7 @@ public class MessageBusImpl implements MessageBus {
         }
         synchronized (msPerMessageQ) {
             for (Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()) {
-                msPerMessageQ.remove(entry.getKey(), m);
+               entry.getValue().remove(m);
             }
         }
     }

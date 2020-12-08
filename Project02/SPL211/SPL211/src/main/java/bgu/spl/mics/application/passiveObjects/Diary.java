@@ -116,5 +116,7 @@ public class Diary {
     public void setLandoTerminate(long landoTerminate) {
         LandoTerminate = landoTerminate;
     }
+    public void resetNumberAttacks(){ totalAttacks = new AtomicInteger(0);//TODO:remove after tests
+}
 }
 
