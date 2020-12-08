@@ -8,6 +8,7 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -37,7 +38,8 @@ public class HanSoloMicroservice extends MicroService {
         /*Please note that the duplicate code fragment for HanSolo and C3PO below (AttackEvent Callback) is due to the
         inability to complete the event from outside a MicroService instance.*/ //TODO: Try to find a solution
         subscribeEvent(AttackEvent.class, (AttackEvent event) -> {
-            int[] ewoks = array(event.getSerial());
+            List<Integer>  e = event.getSerial();
+            ArrayList<Integer> ewoks = array(e);
             long duration = event.getDuration();
             Ewoks.getInstance().acquire(ewoks);
             try {
@@ -61,13 +63,13 @@ public class HanSoloMicroservice extends MicroService {
 
         initializationCount.countDown(); //Signal he finished initializing
     }
-
-    private int[] array(List<Integer> l) {
-        int[] ans = new int[l.size()];
-       for (Integer i:l) {
-            ans[i] = l.get(i);
+    //making array list from a list
+    private ArrayList<Integer> array(List<Integer> l) {
+        ArrayList<Integer> arr = new ArrayList<>(l.size());
+        for (Integer i:l) {
+            arr.add(i);
         }
-        return ans;
+        return arr;
     }
 }
 
