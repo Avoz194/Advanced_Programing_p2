@@ -27,26 +27,28 @@ public class Ewok {
     /**
      * Acquires an Ewok
      */
-    public void acquire() {
-        synchronized (this) {
-            if (!available) { //TODO: change to sync
-                throw new IllegalArgumentException("you can't acquire an ewok that as been allready acquired.");
-            } else {
-                this.available = true;
+    public synchronized void acquire() {
+        while (!available) { //TODO: change to sync
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
             }
         }
+        this.available = false;
+        System.out.println(Thread.currentThread().getName() +"Acquired ewok" + serialNumber);
     }
 
     /**
      * release an Ewok
      */
-    public void release() {
-        synchronized (this) {
-            if (available) {
-                throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
-            } else {
-                this.available = false;
-            }
+    public synchronized void release() {
+        if (available) {
+            throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
+        } else {
+            this.available = true;
+            System.out.println(Thread.currentThread().getName() +"released ewok" + serialNumber);
+
+            this.notifyAll();
         }
     }
 }
