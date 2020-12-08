@@ -65,9 +65,7 @@ public class C3POMicroservice extends MicroService {
     //making array list from a list
     private ArrayList<Integer> array(List<Integer> l) {
         ArrayList<Integer> arr = new ArrayList<>(l.size());
-        for (Integer i:l) {
-            arr.add(i);
-        }
+        arr.addAll(l);
         return arr;
     }
 }
