@@ -38,15 +38,15 @@ public class C3POMicroservice extends MicroService {
         inability to complete the event from outside a MicroService instance.*/ //TODO: Try to find a solution
         subscribeEvent(AttackEvent.class, (AttackEvent event) -> {
             List<Integer>  ew = event.getSerial();
-            ArrayList<Integer> ewoks = array(ew);
+            ArrayList<Integer> requiredEwoks = array(ew);
             long duration = event.getDuration();
-            Ewoks.getInstance().acquire(ewoks);
+            Ewoks.getInstance().acquire(requiredEwoks);
             try {
                 Thread.sleep(duration);
             } catch (InterruptedException e) {
 
             }
-            Ewoks.getInstance().release(ewoks);
+            Ewoks.getInstance().release(requiredEwoks);
             Diary.getInstance().incrementTotalAttacks();
             complete(event, true);
         });

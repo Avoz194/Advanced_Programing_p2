@@ -43,25 +43,17 @@ public class Ewoks {
     2) the program finds where the object in the ewoks vector
     3) we acquire the ewok in this index
      */
-    public void acquire(List<Integer> ewoks) {
-        ArrayList<Integer> arr = array(ewoks);
-        sort(arr);
-        for (int i = 0; i < arr.size(); i++) {
-            ewokVector.elementAt(ewokVector.indexOf(arr.get(i))).acquire();
+    public void acquire(ArrayList<Integer> requiredEwoks) {
+        sort(requiredEwoks);
+        for (int i = 0; i < requiredEwoks.size(); i++) {
+            ewokVector.elementAt(ewokVector.indexOf(requiredEwoks.get(i))).acquire();
         }
     }
 
-    public void release(List<Integer> ewoks) {
-        ArrayList<Integer> arr = array(ewoks);
-        for (int i = 0; i < ewoks.size(); i++) {
-            ewokVector.elementAt(ewokVector.indexOf(arr.get(i))).release();
+    public void release(ArrayList<Integer> requiredEwoks) {
+        for (int i = 0; i < requiredEwoks.size(); i++) {
+            ewokVector.elementAt(ewokVector.indexOf(requiredEwoks.get(i))).release();
         }
     }
 
-    //making array list from a list
-    private ArrayList<Integer> array(List<Integer> l) {
-        ArrayList<Integer> arr = new ArrayList<>(l.size());
-        arr.addAll(l);
-        return arr;
-    }
 }
