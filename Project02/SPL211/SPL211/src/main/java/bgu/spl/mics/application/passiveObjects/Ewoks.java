@@ -34,7 +34,7 @@ public class Ewoks {
             throw new IllegalArgumentException("the vector should be empty in this moment");
         }
         for (int i = 0; i < numOfEwoks; i++) {
-            this.ewokVector.add(new Ewok(i));
+            this.ewokVector.add(new Ewok(i+1));
         }
     }
     
@@ -46,13 +46,13 @@ public class Ewoks {
     public void acquire(ArrayList<Integer> requiredEwoks) {
         sort(requiredEwoks);
         for (int i = 0; i < requiredEwoks.size(); i++) {
-            ewokVector.elementAt(ewokVector.indexOf(requiredEwoks.get(i))).acquire();
+            ewokVector.elementAt(requiredEwoks.get(i)-1).acquire();
         }
     }
 
     public void release(ArrayList<Integer> requiredEwoks) {
         for (int i = 0; i < requiredEwoks.size(); i++) {
-            ewokVector.elementAt(ewokVector.indexOf(requiredEwoks.get(i))).release();
+            ewokVector.elementAt(requiredEwoks.get(i)-1).release();
         }
     }
 
