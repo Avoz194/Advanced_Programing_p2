@@ -35,7 +35,7 @@ public class C3POMicroservice extends MicroService {
     protected void initialize() {
 
          /*Please note that the duplicate code fragment for HanSolo and C3PO below (AttackEvent Callback) is due to the
-        inability to complete the event from outside a MicroService instance.*/ //TODO: Try to find a solution
+        inability to complete the event from outside a MicroService instance.*/
         subscribeEvent(AttackEvent.class, (AttackEvent event) -> {
             List<Integer>  ew = event.getSerial();
             ArrayList<Integer> requiredEwoks = array(ew);

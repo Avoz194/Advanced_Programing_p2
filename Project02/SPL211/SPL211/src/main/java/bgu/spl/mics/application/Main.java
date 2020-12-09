@@ -57,15 +57,10 @@ public class Main {
         Thread LandoT = new Thread(Lando);
 
         HanSoloT.start();
-        System.out.println("HanSoloT ran"); //TODO:remove prints
         C3POT.start();
-        System.out.println("C3POT ran");
         R2D2T.start();
-        System.out.println("R2D2T ran");
         LandoT.start();
-        System.out.println("LandoT ran");
         LeiaT.start();
-        System.out.println("Leia ran");
 
 
         //Wait until all finished
@@ -104,7 +99,7 @@ public class Main {
         } catch (IOException e) {
         }
         Gson gson = new Gson();
-        gson.toJson(diary, writer); //TODO:works?
+        gson.toJson(diary, writer);
         try {
             writer.close();
         } catch (IOException e) {

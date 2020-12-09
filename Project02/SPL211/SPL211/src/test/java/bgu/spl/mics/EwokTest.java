@@ -35,6 +35,7 @@ class EwokTest {
     */
     @Test
     public void testRelease() {
+        ewok.acquire();
         assertFalse(ewok.getAvailable());
         ewok.release();
         assertTrue(ewok.getAvailable());

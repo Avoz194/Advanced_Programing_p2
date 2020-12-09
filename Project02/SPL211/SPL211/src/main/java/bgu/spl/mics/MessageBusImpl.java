@@ -17,9 +17,9 @@ public class MessageBusImpl implements MessageBus {
         private static MessageBusImpl instance = new MessageBusImpl();
     }
 
-    private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ; //TODO: Make sure needs to be concurrent
+    private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ;
     private static HashMap<Event, Future> futurePerEvent;
-    private static ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;//TODO: Make sure needs to be concurrent
+    private static ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;
 
 
     private MessageBusImpl() {
@@ -147,16 +147,16 @@ public class MessageBusImpl implements MessageBus {
             return null;
         } else {
             ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e.getClass());
-            MicroService m1 = getMSForEvent(mss); //TODO:make sure works
+            MicroService m1 = getMSForEvent(mss);
             if (m1 == null) return null;
             ConcurrentLinkedQueue<Message> msQ = messageQs.get(m1);
             synchronized (msQ) {
                 msQ.add(e);
                 msQ.notifyAll();
+                Future<T> f = new Future<>();
+                futurePerEvent.put(e, f);
+                return f;
             }
-            Future<T> f = new Future<>();
-            futurePerEvent.put(e, f);
-            return f;
         }
     }
 
@@ -167,13 +167,14 @@ public class MessageBusImpl implements MessageBus {
     }
 
     public void unregister(MicroService m) {
-        synchronized (messageQs) {
-            messageQs.remove(m);
-        }
+
         synchronized (msPerMessageQ) {
             for (Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()) {
                entry.getValue().remove(m);
             }
+        }
+        synchronized (messageQs) {
+            messageQs.remove(m);
         }
     }
 

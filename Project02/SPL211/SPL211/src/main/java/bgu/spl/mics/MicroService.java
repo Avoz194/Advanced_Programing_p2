@@ -181,8 +181,6 @@ public abstract class MicroService implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
-        System.out.println(Thread.currentThread().getName() +"before unregister"); //TODO:remove
-
         mb.unregister(this);
     }
 

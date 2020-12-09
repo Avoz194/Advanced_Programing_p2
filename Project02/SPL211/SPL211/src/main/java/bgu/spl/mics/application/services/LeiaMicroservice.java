@@ -53,6 +53,7 @@ public class LeiaMicroservice extends MicroService {
         });
         try {
             initializationCount.await(); //use CountDownLatch to make sure other finished initializing
+
         } catch (InterruptedException e) {
         }
         ;
