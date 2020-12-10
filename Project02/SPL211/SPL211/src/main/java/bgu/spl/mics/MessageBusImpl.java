@@ -35,7 +35,7 @@ public class MessageBusImpl implements MessageBus {
      * <p>
      * 1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
      * 2. Add the microService {@code m} to the relevant q in the hashMap.
-     *
+     * We'll use 2 locks, one for each phase, in order to allow a few MS to subscribe at the same time.
      * <p>
      *
      * @param type The {@link Class} representing the type of Message
@@ -167,7 +167,6 @@ public class MessageBusImpl implements MessageBus {
     }
 
     public void unregister(MicroService m) {
-
         synchronized (msPerMessageQ) {
             for (Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()) {
                 synchronized (entry.getValue()) {

@@ -14,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LandoMicroservice extends MicroService {
-    private long duration;
+    private long duration; //Initialized with sleep duration for BombDestroy process.
     private CountDownLatch initializationCount = null;
 
     public LandoMicroservice(long duration) {
@@ -25,6 +25,7 @@ public class LandoMicroservice extends MicroService {
     public void setInitializationCount(CountDownLatch initializationCount){
         this.initializationCount=initializationCount;
     }
+
     protected void initialize() {
         subscribeEvent(BombDestroyerEvent.class, (BombDestroyerEvent event) -> {
             try {

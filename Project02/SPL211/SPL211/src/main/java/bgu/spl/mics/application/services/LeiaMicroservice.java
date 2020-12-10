@@ -53,23 +53,12 @@ public class LeiaMicroservice extends MicroService {
         });
         try {
             initializationCount.await(); //use CountDownLatch to make sure other finished initializing
-
         } catch (InterruptedException e) {
         }
-        ;
         manageAttacks();
-        System.out.println("Leia attack finish"); //TODO:remove prints
-
         manageDeactivation();
-        System.out.println("Leia De finish"); //TODO:remove prints
-
         manageBombDestroyer();
-        System.out.println("Leia bomb finish"); //TODO:remove prints
-
         sendBroadcast(new VictoryBroadcast());
-        System.out.println("Leia send victory"); //TODO:remove prints
-
-
     }
 
     /**

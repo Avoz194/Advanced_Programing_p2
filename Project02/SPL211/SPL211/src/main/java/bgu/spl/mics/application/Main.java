@@ -72,12 +72,10 @@ public class Main {
             HanSoloT.join();
         } catch (InterruptedException e) {
         }
-
         try {
             C3POT.join();
         } catch (InterruptedException e) {
         }
-
         try {
             LandoT.join();
         } catch (InterruptedException e) {
