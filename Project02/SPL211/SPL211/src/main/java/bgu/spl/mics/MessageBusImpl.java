@@ -166,6 +166,11 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
+    /*As instructed in the office hours and the forum, in order not to harm the the liveness
+     *of the program, decided not to support use-cases of unregister happening while
+     *a message is being sent to this MS. This is why we sync by messageQs for unregister,
+     * but sync by Q for send/await message.
+     */
     public void unregister(MicroService m) {
         synchronized (msPerMessageQ) {
             for (Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()) {
