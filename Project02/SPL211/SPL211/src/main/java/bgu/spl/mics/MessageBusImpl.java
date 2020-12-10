@@ -20,8 +20,6 @@ public class MessageBusImpl implements MessageBus {
     private static ConcurrentHashMap<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> msPerMessageQ;
     private static HashMap<Event, Future> futurePerEvent;
     private static ConcurrentHashMap<MicroService, ConcurrentLinkedQueue<Message>> messageQs;
-
-
     private MessageBusImpl() {
         msPerMessageQ = new ConcurrentHashMap<>();
         futurePerEvent = new HashMap<>();
@@ -150,13 +148,15 @@ public class MessageBusImpl implements MessageBus {
             MicroService m1 = getMSForEvent(mss);
             if (m1 == null) return null;
             ConcurrentLinkedQueue<Message> msQ = messageQs.get(m1);
+            Future<T> f = null;
             synchronized (msQ) {
                 msQ.add(e);
                 msQ.notifyAll();
-                Future<T> f = new Future<>();
+                f = new Future<>();
                 futurePerEvent.put(e, f);
-                return f;
             }
+            return f;
+
         }
     }
 
@@ -170,7 +170,9 @@ public class MessageBusImpl implements MessageBus {
 
         synchronized (msPerMessageQ) {
             for (Map.Entry<Class<? extends Message>, ConcurrentLinkedQueue<MicroService>> entry : msPerMessageQ.entrySet()) {
-               entry.getValue().remove(m);
+                synchronized (entry.getValue()) {
+                    entry.getValue().remove(m);
+                }
             }
         }
         synchronized (messageQs) {

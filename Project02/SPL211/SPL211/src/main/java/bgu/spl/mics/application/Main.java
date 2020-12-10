@@ -23,7 +23,7 @@ public class Main {
     public static void main(String[] args) {
         //InputParser
         String inputPath = args[0];
-        String outputPath = args[1];
+        String outputPath =  args[1];
         Input input = null;
         try {
             input = JsonInputReader.getInputFromJson(inputPath);

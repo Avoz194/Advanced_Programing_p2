@@ -36,7 +36,6 @@ class MessageBusImplTest {
     /*Test Case (Test sendEvent and awaitMessage - same flow):
      *Assuming ms1 and ms2 are registered.
      * Subscribe ms1 to AttackEvents with empty callback, and ms2 to send an event of this type.
-     * Make sure the event was inserted to ms1's Q and not to ms3's
      */
     @Test
     public void testSendEvent() throws InterruptedException {
@@ -48,12 +47,6 @@ class MessageBusImplTest {
         } catch (InterruptedException inter) {
             fail();
         }
-        //Test case with no message for ms3. awaitMessage is blocking, we expect it to be interrupted
-      //  try {
-       //     assertFalse(e1.equals(mb.awaitMessage(ms3)));
-       //     fail();
-       // } catch (InterruptedException inter) {
-      //  }
     }
 
     /* Identical Test Case to the above, this time for sendBroadcast().
@@ -71,12 +64,6 @@ class MessageBusImplTest {
         }catch (InterruptedException inter){
             fail();
         }
-        //Test case with no message for ms2. awaitMessage is blocking, we expect it to be interrupted
-      //  try {
-       //     assertFalse(b1.equals(mb.awaitMessage(ms2)));
-       //     fail();
-       // } catch (InterruptedException inter) {
-        //}
     }
 
     /*TestCase:

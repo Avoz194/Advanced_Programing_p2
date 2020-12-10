@@ -37,7 +37,6 @@ public class Ewoks {
             this.ewokVector.add(new Ewok(i+1));
         }
     }
-    
     /*
     1) the collection from the input is sorted
     2) the program finds where the object in the ewoks vector
