@@ -28,7 +28,7 @@ public class Ewoks {
     public static  Ewoks getInstance() {
         return Ewoks.SingletonHolder.instance;
     }
-
+    //building the ewoks vec out of new ewok objects
     public synchronized void init(int numOfEwoks){
         if(ewokVector.size()!=0){
             throw new IllegalArgumentException("the vector should be empty in this moment");
