@@ -31,6 +31,17 @@ public class HanSoloMicroservice extends MicroService {
         this.initializationCount = initializationCount;
     }
 
+    /**
+    *Han subscribe into an Attack event
+     * 1) fetch this event
+     * 2) acquire the necessary ewoks list
+     * 3) sleeping until the end of the duration
+     * 4) realising the ewoks list
+     * 5)raise the total atacks counter by 1
+     * 6)finish is event handling
+     * Han subscribed to the victory broadcast like every m.s.
+     * Han subscribed to the no more attack broadcast to know when to terminate
+     **/
     @Override
     protected void initialize() {
 
