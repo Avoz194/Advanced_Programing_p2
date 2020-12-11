@@ -113,6 +113,7 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
+    //adds all the microsevises that support the broadcast b to the q of the massage b
     public void sendBroadcast(Broadcast b) {
         if (msPerMessageQ.containsKey(b.getClass())) {
 
@@ -129,6 +130,7 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
+    //returns m.s. who are subscribed into specific event
     private MicroService getMSForEvent(ConcurrentLinkedQueue<MicroService> qOfMS) {
         synchronized (qOfMS) {
             if (qOfMS.isEmpty()) {
@@ -140,6 +142,12 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
+    /**
+     * adds an event massage in each q that subscribes into this specific event after some service sent this event
+     * @param e     	The event to add to the queue.
+     * @param <T>
+     * @return          future object who is the promise result
+     */
     public <T> Future<T> sendEvent(Event<T> e) {
         if (!msPerMessageQ.containsKey(e.getClass())) {
             return null;
@@ -160,6 +168,7 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
+    //put the m.s. in the qs of m.s.
     public void register(MicroService m) {
         synchronized (messageQs) { //TODO: consider adding a counter of how many Q's are blocked in order to block messageQ as a whole
             messageQs.put(m, new ConcurrentLinkedQueue<Message>());
