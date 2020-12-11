@@ -28,6 +28,11 @@ public class R2D2Microservice extends MicroService {
         this.initializationCount=initializationCount;
     }
 
+     /**
+     * subscribe into Deactivation Even and then sleep for is duration until finish, than log to Diary, complete is actions
+     * subscribe to Victory Broadcast in order to know when to terminate
+     * signal is fellows that it finish his event
+     */
     @Override
     protected void initialize() {
         subscribeEvent(DeactivationEvent.class, (DeactivationEvent event) -> {
