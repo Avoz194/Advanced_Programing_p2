@@ -70,7 +70,6 @@ public class C3POMicroservice extends MicroService {
         subscribeBroadcast(NoMoreAttacksBroadcast.class, (NoMoreAttacksBroadcast broad) -> {
             Timestamp time = new Timestamp(System.currentTimeMillis());
             Diary.getInstance().setC3POFinish(time.getTime());
-            System.out.println("C3PO finish"); //TODO:remove prints
 
         });
 
