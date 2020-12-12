@@ -35,7 +35,7 @@ public class MessageBusImpl implements MessageBus {
      * 2. Add the microService {@code m} to the relevant q in the hashMap.
      *
      * Sync will be done:
-     * first by the whole msPerMessageQ hash to make sure a few MS won't add the same entity to the hashMap.
+     * First by the whole msPerMessageQ hash to make sure a few MS won't add the same entity to the hashMap.
      * Then, we'll lock the specific Q in the hashmap to allow subscription to a few different Message types
      * at the same time.
      * <p>
