@@ -1,4 +1,5 @@
 package bgu.spl.mics.application;
+
 import bgu.spl.mics.application.passiveObjects.Attack;
 
 public class Input {
@@ -29,6 +30,6 @@ public class Input {
 		return attacks;
 	}
 	public void setAttacks(Attack[] attacks) {
-		this.attacks = attacks;
+		this.attacks	 = attacks;
 	}
 }

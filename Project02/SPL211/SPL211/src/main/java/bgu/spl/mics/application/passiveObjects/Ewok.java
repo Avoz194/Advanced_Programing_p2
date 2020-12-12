@@ -45,7 +45,6 @@ public class Ewok {
             throw new IllegalArgumentException("you can't release an ewok that hasnt been acquired yet");
         } else {
             this.available = true;
-
             this.notifyAll();
         }
     }

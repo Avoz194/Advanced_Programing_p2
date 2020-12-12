@@ -1,11 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
-
-import bgu.spl.mics.MicroService;
-
-import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
-
 
 /**
  * Passive data-object representing a Diary - in which the flow of the battle is recorded.

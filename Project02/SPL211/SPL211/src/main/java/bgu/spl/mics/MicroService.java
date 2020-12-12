@@ -1,7 +1,4 @@
 package bgu.spl.mics;
-
-import com.sun.org.apache.bcel.internal.generic.SWITCH;
-
 import java.util.HashMap;
 
 /**

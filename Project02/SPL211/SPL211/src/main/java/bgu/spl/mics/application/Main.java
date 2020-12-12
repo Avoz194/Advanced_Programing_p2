@@ -5,7 +5,6 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.services.*;
 import java.util.concurrent.CountDownLatch;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;

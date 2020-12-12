@@ -3,7 +3,6 @@ package bgu.spl.mics.application.services;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.passiveObjects.*;

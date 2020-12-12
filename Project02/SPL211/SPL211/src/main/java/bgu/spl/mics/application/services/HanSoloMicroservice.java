@@ -1,11 +1,9 @@
 package bgu.spl.mics.application.services;
 
-
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;

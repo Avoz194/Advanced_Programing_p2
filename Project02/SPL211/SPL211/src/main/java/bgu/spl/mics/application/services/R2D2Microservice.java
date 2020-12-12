@@ -1,7 +1,6 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
-
 import bgu.spl.mics.application.messages.*;
 import java.sql.Timestamp;
 import java.util.concurrent.CountDownLatch;
