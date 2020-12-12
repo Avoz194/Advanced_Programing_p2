@@ -33,7 +33,11 @@ public class MessageBusImpl implements MessageBus {
      * <p>
      * 1. If Message {@code type} doesn't exists in MsPerMessageQ, create a new mapping to a new Q.
      * 2. Add the microService {@code m} to the relevant q in the hashMap.
-     * We'll use 2 locks, one for each phase, in order to allow a few MS to subscribe at the same time.
+     *
+     * Sync will be done:
+     * first by the whole msPerMessageQ hash to make sure a few MS won't add the same entity to the hashMap.
+     * Then, we'll lock the specific Q in the hashmap to allow subscription to a few different Message types
+     * at the same time.
      * <p>
      *
      * @param type The {@link Class} representing the type of Message
@@ -111,11 +115,14 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    //adds all the microsevises that support the broadcast b to the q of the massage b
-    //sync msPerMessageQ and messgeQs for microsevises to work one by one and to avoid conflicts
+    /* Add all the microsevises that support the broadcast b to the q of the massage b
+     * we'll sync first by the specific Q in msPerMessageQ for te Broadcast in order to make sure the list
+     * of subscribed MS won't change during the process.
+     * Then, we'll sync by the specific Q in order to add the message to the Q and notify all threads
+     * waiting to pull from this Q.
+     */
     public void sendBroadcast(Broadcast b) {
         if (msPerMessageQ.containsKey(b.getClass())) {
-
             ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(b.getClass());
             synchronized (mss) {
                 for (MicroService m : mss) {
@@ -129,7 +136,7 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    //returns m.s. who are subscribed into specific event
+    //returns m.s. who are subscribed into specific event - implement roundRubin
     private MicroService getMSForEvent(ConcurrentLinkedQueue<MicroService> qOfMS) {
         synchronized (qOfMS) {
             if (qOfMS.isEmpty()) {
@@ -143,28 +150,31 @@ public class MessageBusImpl implements MessageBus {
 
     /**
      * adds an event massage in each q that subscribes into this specific event after some service sent this event
+     * Under getMSForEvent we'll sync first by the specific Q in msPerMessageQ for the event in order to make sure the list
+     * of subscribed MS won't change during the process.
+     * Then, we'll sync by the specific Q in order to add the message to the Q and notify all threads
+     * waiting to pull from this Q.
      * @param e     	The event to add to the queue.
      * @param <T>
      * @return          future object who is the promise result
      */
-    //sync msPerMessageQ and messgeQs for microsevises to work one by one and to avoid conflicts
+
     public <T> Future<T> sendEvent(Event<T> e) {
         if (!msPerMessageQ.containsKey(e.getClass())) {
             return null;
         } else {
             ConcurrentLinkedQueue<MicroService> mss = msPerMessageQ.get(e.getClass());
-            MicroService m1 = getMSForEvent(mss);
+            MicroService m1 = getMSForEvent(mss); //Implement roundRubin
             if (m1 == null) return null;
             ConcurrentLinkedQueue<Message> msQ = messageQs.get(m1);
             Future<T> f = null;
             synchronized (msQ) {
                 msQ.add(e);
-                msQ.notifyAll();
                 f = new Future<>();
                 futurePerEvent.put(e, f);
+                msQ.notifyAll();
             }
             return f;
-
         }
     }
 
@@ -175,9 +185,9 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    /*As instructed in the office hours and the forum, in order not to harm the the liveness
-     *of the program, decided not to support use-cases of unregister happening while
-     *a message is being sent to this MS. This is why we sync by messageQs for unregister,
+    /* As instructed in the office hours and the forum, in order not to harm the the liveness
+     * of the program, decided not to support use-cases of unregister happening while
+     * a message is being sent to this MS. This is why we sync by messageQs for unregister,
      * but sync by Q for send/await message.
      */
     public void unregister(MicroService m) {
@@ -196,7 +206,7 @@ public class MessageBusImpl implements MessageBus {
 
     /**
      * Pulls a message from the MicroService's Q under messageQs HashMap.
-     * Throws exception if no Q was created.
+     * Throws exception if no Q was created (under sync of the messageQs hashMap).
      * In case the Q is empty, wait until a message enters (notifyAll sent from @sendEvent and @sendBroadcast functions)
      * <p>
      * Return a message
