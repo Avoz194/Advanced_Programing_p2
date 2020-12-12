@@ -32,7 +32,7 @@ public class C3POMicroservice extends MicroService {
     }
 
     /**
-         *3CPO subscribe into an Attack event
+         *C3PO subscribe into an Attack event
          * 1) fetch this event
          * 2) acquire the necessary ewoks list
          * 3) sleeping until the end of the duration
