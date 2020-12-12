@@ -170,7 +170,7 @@ public class MessageBusImpl implements MessageBus {
 
     //put the m.s. in the qs of m.s.
     public void register(MicroService m) {
-        synchronized (messageQs) { //TODO: consider adding a counter of how many Q's are blocked in order to block messageQ as a whole
+        synchronized (messageQs) { 
             messageQs.put(m, new ConcurrentLinkedQueue<Message>());
         }
     }
