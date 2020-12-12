@@ -114,6 +114,7 @@ public class MessageBusImpl implements MessageBus {
     }
 
     //adds all the microsevises that support the broadcast b to the q of the massage b
+    //sync msPerMessageQ and messgeQs for microsevises to work one by one and to avoid conflicts
     public void sendBroadcast(Broadcast b) {
         if (msPerMessageQ.containsKey(b.getClass())) {
 
@@ -148,6 +149,7 @@ public class MessageBusImpl implements MessageBus {
      * @param <T>
      * @return          future object who is the promise result
      */
+    //sync msPerMessageQ and messgeQs for microsevises to work one by one and to avoid conflicts
     public <T> Future<T> sendEvent(Event<T> e) {
         if (!msPerMessageQ.containsKey(e.getClass())) {
             return null;
@@ -170,7 +172,7 @@ public class MessageBusImpl implements MessageBus {
 
     //put the m.s. in the qs of m.s.
     public void register(MicroService m) {
-        synchronized (messageQs) { //TODO: consider adding a counter of how many Q's are blocked in order to block messageQ as a whole
+        synchronized (messageQs) { 
             messageQs.put(m, new ConcurrentLinkedQueue<Message>());
         }
     }
