@@ -115,11 +115,14 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    /* Add all the microsevises that support the broadcast b to the q of the massage b
-     * we'll sync first by the specific Q in msPerMessageQ for te Broadcast in order to make sure the list
-     * of subscribed MS won't change during the process.
+   /**
+     * Add all the microsevises that support the broadcast {@code b} to the q of the massage b we'll
+     * sync first by the specific Q in msPerMessageQ for te Broadcast in order to make sure
+     * the list of subscribed MS won't change during the process.
      * Then, we'll sync by the specific Q in order to add the message to the Q and notify all threads
-     * waiting to pull from this Q.
+     * waiting to pull from this Q
+     *
+     * @param b the broadcast to send
      */
     public void sendBroadcast(Broadcast b) {
         if (msPerMessageQ.containsKey(b.getClass())) {
@@ -178,17 +181,23 @@ public class MessageBusImpl implements MessageBus {
         }
     }
 
-    //put the m.s. in the qs of m.s.
+    /**
+     * put the microservice {@code m} in the qs of microservices
+     * @param m the microservice to register
+     */
     public void register(MicroService m) {
         synchronized (messageQs) { 
             messageQs.put(m, new ConcurrentLinkedQueue<Message>());
         }
     }
 
-    /* As instructed in the office hours and the forum, in order not to harm the the liveness
+   /**
+     * As instructed in the office hours and the forum, in order not to harm the the liveness
      * of the program, decided not to support use-cases of unregister happening while
-     * a message is being sent to this MS. This is why we sync by messageQs for unregister,
-     * but sync by Q for send/await message.
+     * a message is being sent to this MS {@code m}. This is why we sync by messageQs for unregister,
+     * but sync by Q for send/await message
+     *
+     * @param m the microservice to unregister
      */
     public void unregister(MicroService m) {
         synchronized (msPerMessageQ) {
