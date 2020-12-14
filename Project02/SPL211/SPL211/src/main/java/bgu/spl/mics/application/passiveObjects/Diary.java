@@ -75,7 +75,10 @@ public class Diary {
         return LandoTerminate;
     }
 
-    //incrementTotalAttacks increase the number of attacks by one.
+    /**
+     * incrementTotalAttacks increase the number of attacks by one.
+     *
+     */
     public void incrementTotalAttacks() {
         this.totalAttacks.getAndIncrement();
     }
