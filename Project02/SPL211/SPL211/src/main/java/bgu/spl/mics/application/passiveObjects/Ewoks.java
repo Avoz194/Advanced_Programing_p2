@@ -35,19 +35,27 @@ public class Ewoks {
             this.ewokVector.add(new Ewok(i+1));
         }
     }
-    /*
-    1) the collection from the input is sorted
-    2) the program finds where the object in the ewoks vector
-    3) we acquire the ewok in this index
+   
+     /**
+     * acquire a list of ewoks {@code requiredEwoks}
+     * 1) the collection from the input is sorted
+     * 2) the program finds where the object in the ewoks vector
+     * 3) we acquire the ewok in this index
+     *
+     * @param requiredEwoks the arrayList of ewoks to ecquire
      */
-    //acquire a list of ewoks
     public void acquire(ArrayList<Integer> requiredEwoks) {
         sort(requiredEwoks);
         for (int i = 0; i < requiredEwoks.size(); i++) {
             ewokVector.elementAt(requiredEwoks.get(i)-1).acquire();
         }
     }
-    //realese a list of ewoks
+    
+     /**
+     * realese a list of ewoks
+     *
+     * @param requiredEwoks the ewoks {@code requiredEwoks} to be release
+     */
     public void release(ArrayList<Integer> requiredEwoks) {
         for (int i = 0; i < requiredEwoks.size(); i++) {
             ewokVector.elementAt(requiredEwoks.get(i)-1).release();
